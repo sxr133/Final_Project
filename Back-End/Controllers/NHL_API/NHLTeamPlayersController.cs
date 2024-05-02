@@ -1,28 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
-using System.Text.Json.Nodes;
 
-namespace Sports_Stats_Back_End.Controllers
+namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLStandingsController : ControllerBase
+    public class NHLTeamPlayersController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public NHLStandingsController(IHttpClientFactory clientFactory)
+        public NHLTeamPlayersController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLStandings([FromHeader] string conference)
+        public async Task<IActionResult> GetNHLTeamPlayers([FromHeader] string teamId)
         {
+            if (string.IsNullOrEmpty(teamId))
+            {
+                return BadRequest("Team ID is required");
+            }
+
             try
             {
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("Team Id {0}", teamId);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri("https://nhl-api5.p.rapidapi.com/nhlstandings?year=2024&group=conference");
-                
+                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/nhlteamplayers?teamid={teamId}");
+                Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
@@ -42,17 +48,8 @@ namespace Sports_Stats_Back_End.Controllers
                     // Parse the JSON string into a JObject
                     var jsonObject = JObject.Parse(body);
 
-                    // Filter for the specified conference
-                    var conferenceData = jsonObject["children"].FirstOrDefault(c => c["name"].ToString().Contains(conference));
-                    
-                    if (conferenceData != null)
-                    {
-                        return Ok(conferenceData.ToString());
-                    }
-                    else
-                    {
-                        return NotFound($"{conference} Conference data not found.");
-                    }
+                    return Ok(jsonObject.ToString()); // Directly return the JSON object if the API's response is suitable
+
 
                 }
             }

@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
-namespace Sports_Stats_Back_End.Controllers
+namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLTeamStatsController : ControllerBase
+    public class NHLPlayersStatsController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public NHLTeamStatsController(IHttpClientFactory clientFactory)
+        public NHLPlayersStatsController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLTeamStats([FromHeader] string teamId)
+        public async Task<IActionResult> GetNHLPlayerStats([FromHeader] string playerId)
         {
-            if (string.IsNullOrEmpty(teamId))
+            if (string.IsNullOrEmpty(playerId))
             {
                 return BadRequest("Team ID is required");
             }
@@ -25,9 +26,9 @@ namespace Sports_Stats_Back_End.Controllers
             try
             {
                 Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Team Id {0}", teamId);
+                Console.WriteLine("Player Id {0}", playerId);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/team-statistic?teamid={teamId}");
+                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/player-statistic?playerId={playerId}");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {

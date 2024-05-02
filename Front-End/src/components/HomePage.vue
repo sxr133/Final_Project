@@ -98,6 +98,12 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         if (league === 'nhl') {
           this.currentLeague = 'nhl';
           this.showDropDown = true;
+          this.showNHLTable = true; // Set NHL related flags here
+          this.showMLBTable = false;
+          this.showNBATable = false;
+          this.showNHLPlayersTable = false;
+          console.log("showdropDown", this.showDropDown)
+          console.log("showNHLPlayersTable", this.showNHLPlayersTable)
 
         } else if (league === 'mlb') {
           this.currentLeague = 'mlb';

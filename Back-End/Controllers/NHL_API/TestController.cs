@@ -1,33 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
-namespace Sports_Stats_Back_End.Controllers
+namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLTeamPlayersController : ControllerBase
+    public class TestController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public NHLTeamPlayersController(IHttpClientFactory clientFactory)
+        public TestController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLTeamPlayers([FromHeader] string teamId)
-        {
-            if (string.IsNullOrEmpty(teamId))
+        public async Task<IActionResult> GetTest([FromHeader] string division) { 
+  
+            if (string.IsNullOrEmpty(division))
             {
-                return BadRequest("Team ID is required");
+                return BadRequest("division ID is required");
             }
-             
+
             try
             {
                 Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Team Id {0}", teamId);
+                Console.WriteLine("division{0}", division);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/nhlteamplayers?teamid={teamId}");
+                var uri = new Uri($"https://sports-information.p.rapidapi.com/nhl/standings?year=2024&group={division}");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -36,7 +36,7 @@ namespace Sports_Stats_Back_End.Controllers
                     Headers =
                     {
                         { "X-RapidAPI-Key", "247fad3da0msh0578dc9195d4f0bp1c399ejsnbe542042ec49" },
-                        { "X-RapidAPI-Host", "nhl-api5.p.rapidapi.com" },
+                        { "X-RapidAPI-Host", "sports-information.p.rapidapi.com" },
                     },
                 };
 
@@ -47,7 +47,7 @@ namespace Sports_Stats_Back_End.Controllers
 
                     // Parse the JSON string into a JObject
                     var jsonObject = JObject.Parse(body);
-                    
+
                     return Ok(jsonObject.ToString()); // Directly return the JSON object if the API's response is suitable
 
 

@@ -1,35 +1,28 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
-namespace Sports_Stats_Back_End.Controllers
+namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLPlayersStatsController : ControllerBase
+    public class NHLStandingsController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
 
-        public NHLPlayersStatsController(IHttpClientFactory clientFactory)
+        public NHLStandingsController(IHttpClientFactory clientFactory)
         {
             _clientFactory = clientFactory;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLPlayerStats([FromHeader] string playerId)
+        public async Task<IActionResult> GetNHLStandings([FromHeader] string conference)
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                return BadRequest("Team ID is required");
-            }
-
             try
             {
-                Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Player Id {0}", playerId);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/player-statistic?playerId={playerId}");
-                Console.WriteLine("Uri {0}", uri);
+                var uri = new Uri("https://nhl-api5.p.rapidapi.com/nhlstandings?year=2024&group=conference");
+
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
@@ -49,8 +42,17 @@ namespace Sports_Stats_Back_End.Controllers
                     // Parse the JSON string into a JObject
                     var jsonObject = JObject.Parse(body);
 
-                    return Ok(jsonObject.ToString()); // Directly return the JSON object if the API's response is suitable
+                    // Filter for the specified conference
+                    var conferenceData = jsonObject["children"].FirstOrDefault(c => c["name"].ToString().Contains(conference));
 
+                    if (conferenceData != null)
+                    {
+                        return Ok(conferenceData.ToString());
+                    }
+                    else
+                    {
+                        return NotFound($"{conference} Conference data not found.");
+                    }
 
                 }
             }
