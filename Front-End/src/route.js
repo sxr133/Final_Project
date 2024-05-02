@@ -1,18 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import NHLTeamPlayers from './components/nhl/NHLTeamPlayers.vue';
-import NHLDivision from './components/nhl/NHLDivision.vue';
 
 // Define routes
 const routes = [
-  {
-    path: '/',
-    redirect: '/nhl-teams' // Assuming this is your main route
-  },
-  {
-    path: '/nhl-teams',
-    name: 'NHLDivision',
-    component: NHLDivision
-  },
   {
     path: '/team-roster/:teamId',
     name: 'TeamRoster',

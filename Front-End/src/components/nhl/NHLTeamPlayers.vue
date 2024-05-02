@@ -3,8 +3,6 @@
     <div v-if="teamPlayers.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
       <!-- Search input -->
       <input type="text" v-model="searchQuery" placeholder="Search..." class="text-gray-400 uppercase dark:bg-gray-800 my-5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 placeholder-opacity-100">
-       <!-- Back button -->
-      <button class="back-button" @click="goBack">Back to previous page</button>
 
       <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
           <colgroup>
@@ -101,12 +99,6 @@ export default {
 },
   },
   methods: {
-    // Method to navigate back using Vue Router
-    goBack() {
-      console.log("going back");
-      // Using Vue Router's go(-1) method to navigate back
-      this.$router.back();
-    },
     formatDate(dateString) {
       // Parse the date string
       const date = new Date(dateString);
