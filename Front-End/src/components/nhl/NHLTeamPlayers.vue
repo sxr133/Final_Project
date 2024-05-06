@@ -4,6 +4,11 @@
       <!-- Search input -->
       <input type="text" v-model="searchQuery" placeholder="Search..." class="text-gray-400 uppercase dark:bg-gray-800 my-5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 placeholder-opacity-100">
 
+      <div>
+        <router-link :to="'/'" @click="$emit('divisionSelected', {division : this.selectedDivision})">
+          <button>Go to Division Page</button>
+        </router-link>
+      </div>
       <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
           <colgroup>
             <col style="width: 15%;">
@@ -72,31 +77,44 @@ import axios from 'axios';
 export default {
   props: {
     teamId: {
-      type: String,
+      type: Object,
+      required: true,
+    },
+    division: {
+      type: [String, Object],
       required: true,
     }
   },
+
   data() {
     return {
+      selectedDivision: '',
       sortBy: null, // Initialize sortBy to null',
       sortDirection: 'asc',
       teamPlayers: [],
       searchQuery: '' // Add searchQuery property
     };
   },
+  mounted() {
+    const { teamId, division } = this.teamId;
+     this.selectedDivision = division;
+     // Example: Fetch data using teamId and division
+     this.fetchTeamPlayers(teamId, division);
+    // Now you can use teamId and division directly in this component
+  },
   computed: {
     filteredPlayers() {
-    if (!this.teamPlayers) return [];
-    return this.teamPlayers.filter(player => {
+      if (!this.teamPlayers) return [];
+        return this.teamPlayers.filter(player => {
         // Check if player's properties are defined and contain the search query
-        return (
+          return (
             (player.position && player.position.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
             (player.fullName && player.fullName.toLowerCase().includes(this.searchQuery.toLowerCase())) ||
             // Add more conditions for other properties as needed
             false
-        );
-    });
-},
+          );
+        });
+    },
   },
   methods: {
     formatDate(dateString) {
@@ -112,39 +130,27 @@ export default {
       return `${year}-${month}-${day}`;
     },
     sortByColumn(column) {
-      switch (column) {
-        case 'position':
-          this.sortBy = 'position'
-          break;
-        case 'name':
-          this.sortBy = 'name'
-          break;
-        default:
-          break;
-      }
+      this.sortBy = column;
       this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc'; // Toggle sorting direction
 
-      // Sort the teamPlayers array based on player.position and sorting direction
+      // Sort the teamPlayers array based on the selected column and sorting direction
       this.teamPlayers.sort((a, b) => {
         if (this.sortDirection === 'asc') {
-          return a.position.localeCompare(b.position);
+          return a[column].localeCompare(b[column]);
         } else {
-          return b.position.localeCompare(a.position);
+          return b[column].localeCompare(a[column]);
         }
       });
     },
-    async fetchTeamPlayers() {
-      console.log("Fetching players for team ID:", this.teamId);
-
-      if (!this.teamId) {
-        console.error("Team ID is undefined");
+    async fetchTeamPlayers(teamId) {
+      if (!teamId) {
         return;
       }
       const endpoint = `https://localhost:7102/api/NHLTeamPlayers`;
         try {
           const response = await axios.get(endpoint, {
             headers: {
-              teamId: this.teamId // Sending the selected conference as a header
+              teamId: teamId // Sending the selected conference as a header
             }
           });
 
@@ -152,8 +158,8 @@ export default {
       
       this.teamPlayers = response.data.team.athletes.map(athlete => ({
         headshot: athlete.headshot && athlete.headshot.href ? athlete.headshot.href : '/images/no-img.png',
-    headshot_alt: athlete.headshot && athlete.headshot.alt ? athlete.headshot.alt : 'No Image Available',
-    position: athlete.position ? athlete.position.name : 'Unknown Position',
+        headshot_alt: athlete.headshot && athlete.headshot.alt ? athlete.headshot.alt : 'No Image Available',
+        position: athlete.position ? athlete.position.name : 'Unknown Position',
         fullName: athlete.fullName,
         displayName: athlete.displayName,
         displayWeight: athlete.displayWeight,

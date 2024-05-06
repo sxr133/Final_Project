@@ -45,7 +45,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
                                                             
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', team.id)">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -81,7 +81,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', team.id)">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
           </tr>
           </tbody>
       </table>
@@ -119,7 +119,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', team.id)">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -155,7 +155,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', team.id)">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -203,8 +203,9 @@
     },
     
     methods: {
-      showNHLDivision(conference) {
-        this.$emit('showNHLDivision', conference);
+      handleDivisionSelected(division) {
+        this.selectedDivision = division; // Set the selectedDivision value
+        console.log('Division selected:', this.selectedDivision);
       },
       async fetchDivisionStandings() {
         this.isLoading = true;
@@ -220,13 +221,11 @@
           Object.keys(this.divisions[this.selectedDivision]).forEach(key => {
             this.divisions[this.selectedDivision][key] = [];
           });
-          console.log("response data" + response.data);
           if (response.data && response.data.children) {
             response.data.children.forEach(division => {
               this.processDivisionData(division);
             });
           }
-          console.log("Divisions updated:", this.divisions);
         } catch (error) {
           console.error('Error fetching NHL division standings:', error);
         } finally {
