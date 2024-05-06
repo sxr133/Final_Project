@@ -26,13 +26,17 @@
         <div v-if="!showNHLTeamPlayers">
           <!-- NHL Division Component -->
           <NHLDivision 
-            :showDivisionOptionTable="showDivisionOptionTable" 
-            @teamSelected="showTeamPlayers" 
+            :showDivisionOptionTable = "showDivisionOptionTable"
+            :selectedDivision="selectedDivision" 
+            @teamSelected = "showTeamPlayers" 
           />
         </div>
 
         <!-- NHL Team Players Component -->
-        <NHLTeamPlayers v-if="showNHLTeamPlayers" :teamId="selectedTeamId"/>
+        <NHLTeamPlayers v-if="showNHLTeamPlayers" 
+          :teamId="selectedTeamId" 
+          @divisionSelected="handleDivisionSelected"
+        />
 
     </div>
   </section>
@@ -61,6 +65,7 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         showNHLTeamPlayers: false,
         showNHLPlayersTable: false,
         selectedTeamId: null,
+        selectedDivision: null,
 
         currentLeague: null,
         showMLBTable: false,
@@ -78,7 +83,12 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
       };
     },
     methods: {
-      showStats(option) {
+      handleDivisionSelected(division) {
+        this.selectedDivision = division; // Set the selectedDivision value
+        console.log('Division selected:', this.selectedDivision);
+        this.showNHLTeamPlayers = false;
+      },
+     showStats(option) {
 
         this.showNHLTable = false;
         this.showDivisionOptionTable = false;
@@ -98,13 +108,12 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         if (league === 'nhl') {
           this.currentLeague = 'nhl';
           this.showDropDown = true;
-          this.showNHLTable = true; // Set NHL related flags here
+          
           this.showMLBTable = false;
           this.showNBATable = false;
-          this.showNHLPlayersTable = false;
-          console.log("showdropDown", this.showDropDown)
-          console.log("showNHLPlayersTable", this.showNHLPlayersTable)
-
+          this.showNHLTeamPlayers = false;
+          this.selectedStats = "Select";
+          this.showDivisionOptionTable = false;
         } else if (league === 'mlb') {
           this.currentLeague = 'mlb';
           this.showMLBTable = !this.showMLBTable;
@@ -152,7 +161,6 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
       },
       showMLBDivision(conference) {
         if (conference === 'al') {
-          console.log("i got selected")
           this.showMLBWesternDivisionTitle = true;
           this.showMLBEasternDivisionTitle = false;
           this.showMLBALTable = !this.showMLBALTable;
@@ -165,7 +173,6 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         }
       },
       showNBADivision(conference) {
-        console.log("i got selected")
         if (conference === 'western') {
           this.showNBAWesternDivisionTitle = true;
           this.showNBAEasternDivisionTitle = false;
@@ -179,10 +186,11 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         }
       },
        // Update this method to set showNHLTeamPlayers to true and selectedTeamId to the selected team's ID
-    showTeamPlayers(teamId) {
+    showTeamPlayers(teamId, division) {
       this.showNHLTeamPlayers = true;
       this.selectedTeamId = teamId;
-    }
+      this.selectedDivision = division;
+      }
     }
   };
 </script>

@@ -1,11 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import NHLTeamPlayers from './components/nhl/NHLTeamPlayers.vue';
+import HomePage from './components/HomePage.vue';
 
 // Define routes
 const routes = [
   {
+    path: '/',
+    name: 'division',
+    component: HomePage,
+    props: true // This ensures that route params are passed as props to the component
+  
+  },
+  {
     path: '/team-roster/:teamId',
-    name: 'TeamRoster',
+    name: 'team-roster',
     component: NHLTeamPlayers,
     props: true // This allows the route parameter to be passed as a prop to the component
   },
