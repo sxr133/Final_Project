@@ -1,4 +1,5 @@
 Front-End/node_modules/
+Back-End/.vs/Sports_Stats_Back_End/FileContentIndex/*
 Back-End/.vs/Sports_Stats_Back_End/FileContentIndex/30bc79f9-1965-4aaf-98dc-e4608c40aea4.vsidx
 Back-End/.vs/Sports_Stats_Back_End/FileContentIndex/40dbb429-996e-40fe-86c6-f39afe5e3f3f.vsidx
 Back-End/.vs/Sports_Stats_Back_End/FileContentIndex/6593aa67-8c5e-4837-a6fc-b4838591ec17.vsidx
@@ -86,3 +87,5 @@ Back-End/obj/Debug/net8.0/Sports_Stats_Back_End.dll
 Back-End/obj/Debug/net8.0/Sports_Stats_Back_End.MvcApplicationPartsAssemblyInfo.cache
 /Back-End/.vs/Sports_Stats_Back_End/FileContentIndex
 /Back-End/obj/Debug/net8.0
+Back-End/.vs/Back-End/FileContentIndex/0930ebb9-df5e-4fcd-a615-65c31d701a64.vsidx
+Back-End/.vs/Back-End/FileContentIndex/ce149cab-3724-45f8-b5e9-12d7edf36612.vsidx
