@@ -45,7 +45,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
                                                             
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -81,7 +81,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
           </tr>
           </tbody>
       </table>
@@ -119,7 +119,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -155,7 +155,7 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id, division: this.selectedDivision })">View Team Roster</router-link></td>
+            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
           </tr>
         </tbody>
       </table>
@@ -165,6 +165,7 @@
 
 <script>
   import axios from 'axios';
+
   export default {
     props: {
 

@@ -1,31 +1,28 @@
 <template>
   <div class="bg-zinc-300 h-screen">
-    <template v-if="loggedIn">
-      <!-- Display the HomePage if logged in -->
-      <home-page />
-    </template>
-    <template v-else>
-      <!-- Display the LoginForm if not logged in -->
-      <login-form @loginSuccess="loggedIn = true" />
-    </template>
+    <router-view />
   </div>
 </template>
 
 <script>
-import LoginForm from './components/LoginForm.vue';
-import HomePage from './components/HomePage.vue';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router'; // Import useRouter from vue-router
 
 export default {
-  components: {
-    LoginForm,
-    HomePage,
-  },
   setup() {
     // Reactive variable to track login status
     const loggedIn = ref(false);
+    const router = useRouter(); // Access router instance
 
-    return { loggedIn };
+    // Function to handle login success event
+    const handleLoginSuccess = () => {
+      
+      loggedIn.value = true; // Update loggedIn status upon successful login
+      // Redirect to home page upon successful login
+      router.push({ name: 'homePage' });
+    };
+
+    return { loggedIn, handleLoginSuccess };
   }
 };
 </script>
