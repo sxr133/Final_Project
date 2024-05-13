@@ -5,8 +5,6 @@ import LoginForm from './components/LoginForm.vue';
 import HomePage from './components/HomePage.vue';
 
 
-
-
 // Define routes
 const routes = [
   {
@@ -14,12 +12,6 @@ const routes = [
     name: 'LoginForm',
     component: LoginForm,
     props: true // This ensures that route params are passed as props to the component
-  },
-  {
-    path: '/division',
-    name: 'division',
-    component: HomePage,
-    props: true
   },
   {
     path: '/home',
