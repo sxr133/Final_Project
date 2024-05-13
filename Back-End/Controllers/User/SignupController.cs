@@ -1,81 +1,68 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Sports_Stats_Back_End.Data;
-using Sports_Stats_Back_End.Models;
+﻿//using Microsoft.AspNetCore.Mvc;
+//using Sports_Stats_Back_End.Models;
+//using System;
+//using System.Threading.Tasks;
+//using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Sports_Stats_Back_End.Controllers.User
-{
-    [ApiController]
-    [Route("[controller]")]
-    public class SignupController : ControllerBase
-    {
-        private readonly AppDbContext _context;
+//namespace Sports_Stats_Back_End.Controllers.User
+//{
+//    [ApiController]
+//    [Route("api/[controller]")]
+//    public class SignupController : ControllerBase
+//    {
+//        private readonly YourDbContext _context;
 
-        public SignupController(AppDbContext context)
-        {
-            _context = context;
-        }
+//        public SignupController(YourDbContext context)
+//        {
+//            _context = context;
+//        }
 
-        [HttpPost]
-        public IActionResult Signup([FromBody] UserSignup request)
-        {
-            try
-            {
-                Console.WriteLine("Hello1");
-                // Validate request data
-                if (string.IsNullOrEmpty(request.FirstName) || string.IsNullOrEmpty(request.LastName) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Password))
-                {
-                    return BadRequest(new { Message = "All fields are required" });
-                }
-                Console.WriteLine("Hello2");
-                // Check if user with email already exists
-                var existingUser = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-                if (existingUser != null)
-                {
-                    return Conflict(new { Message = "User with this email already exists" });
-                }
-                Console.WriteLine("Hello3");
-                // Create new user
-                var newUserSignup = new UserSignup
-                {
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    StreetAddress1 = request.StreetAddress1,
-                    StreetAddress2 = request.StreetAddress2,
-                    City = request.City,
-                    State_Prov = request.State_Prov,
-                    Zip_Post_Cd = request.Zip_Post_Cd,
-                    Country = request.Country,
-                    Email = request.Email,
-                    Password = request.Password
-                    // You might want to hash the password before storing it
-                };
+//        [HttpPost]
+//        public async Task<IActionResult> Signup(UserSignupModel model)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-                _context.UserSignups.Add(newUserSignup);
-                _context.SaveChanges();
+//            // Check if the username or email is already taken
+//            if (UsernameOrEmailExists(model.Username, model.Email))
+//            {
+//                return Conflict("Username or email already exists");
+//            }
 
-                // Create a new user instance
-                var newUser = new Sports_Stats_Back_End.Models.User
-                {
-                    Email = request.Email,
-                    Password = request.Password,
-                    // You can add other properties here
-                };
+//            // Create a new user entity
+//            var newUser = new UserSignupModel
+//            {
+//                Username = model.Username,
+//                Email = model.Email,
+//                // Hash the password before storing it in the database
+//                // You should use a secure hashing algorithm like bcrypt
+//                // Do NOT store passwords in plaintext
+//                PasswordHash = HashPassword(model.Password)
+//                // You may also want to add other properties like FirstName, LastName, etc.
+//            };
 
-                // Add the user to the Users table
-                _context.Users.Add(newUser);
+//            // Add the new user to the database
+//            _context.Users.Add(newUser);
+//            await _context.SaveChangesAsync();
 
-                // Save changes to the database
-                _context.SaveChanges();
+//            // Return a success response
+//            return Ok("Signup successful");
+//        }
 
-                Console.WriteLine("The Request contains:", request);
-                return Ok(new { Message = "User registered successfully" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return StatusCode(500, new { Message = "An unexpected error occurred" });
-            }
-        }
-    }
-}
+//        // Helper method to check if username or email already exists in the database
+//        private bool UsernameOrEmailExists(string username, string email)
+//        {
+//            return _context.Users.Any(u => u.Username == username || u.Email == email);
+//        }
+
+//        // Dummy method to hash the password (replace with your actual hashing implementation)
+//        private string HashPassword(string password)
+//        {
+//            // This is a dummy implementation, DO NOT use in production
+//            // You should use a secure hashing algorithm like bcrypt
+//            return password;
+//        }
+//    }
+//}

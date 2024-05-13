@@ -8,8 +8,6 @@ namespace Sports_Stats_Back_End.Data
     {
         public DbSet<User> Users { get; set; }
 
-        public DbSet<UserSignup> UserSignups { get; set; }
-
         public AppDbContext(DbContextOptions options) : base(options)
         {
 
