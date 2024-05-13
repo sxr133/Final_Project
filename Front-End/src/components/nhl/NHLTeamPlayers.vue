@@ -1,14 +1,13 @@
 <template>
- <div class="justify-center">
+ <div class="flex justify-center bg-zinc-300 h-fit">
     <div v-if="teamPlayers.length > 0" class="overflow-x-auto shadow-md sm:rounded-lg">
       <!-- Search input -->
       <input type="text" v-model="searchQuery" placeholder="Search..." class="text-gray-400 uppercase dark:bg-gray-800 my-5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 placeholder-opacity-100">
 
-      <div>
-        <router-link :to="'/'" @click="$emit('divisionSelected', {division : this.selectedDivision})">
-          <button>Go to Division Page</button>
-        </router-link>
-      </div>
+      <router-link :to="'/division'">
+        Go to Division Page
+      </router-link>
+
       <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
           <colgroup>
             <col style="width: 15%;">
@@ -17,8 +16,6 @@
             <col style="width: 5%;">
             <col style="width: 5%;">
             <col style="width: 15%;">
-            <col style="width: 5%;">
-            <col style="width: 1%;">
           </colgroup>
           <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
             <tr>
@@ -52,7 +49,9 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(player, index) in filteredPlayers" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+            <tr v-for="(player, index) in filteredPlayers" :key="index" 
+              :class="{ 'bg-white dark:bg-gray-900': index % 2 === 0, 'bg-gray-50 dark:bg-gray-800': index % 2 !== 0 }"
+              class="border-b dark:border-gray-700 px-6 py-4 text-gray-400">
               <td class="px-6 py-4 text-gray-400 text-center">{{ player.position }}</td>
               <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
                 <img class="block w-16 h-16 mb-2" :src="player.headshot" :alt="player.fullName + ' headshot'">
@@ -64,7 +63,10 @@
               <td class="px-6 py-4 text-gray-400 text-center">{{ formatDate(player.dateOfBirth) }}</td>
               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
-            </tr>
+            
+            </tr>  
+                     
+
           </tbody>
         </table>
       </div>
@@ -77,13 +79,14 @@ import axios from 'axios';
 export default {
   props: {
     teamId: {
-      type: Object,
+      type: Number,
       required: true,
     },
-    division: {
-      type: [String, Object],
-      required: true,
-    }
+    emitEventOnMount: {
+    type: Boolean,
+    default: false
+  }
+
   },
 
   data() {
@@ -92,15 +95,25 @@ export default {
       sortBy: null, // Initialize sortBy to null',
       sortDirection: 'asc',
       teamPlayers: [],
-      searchQuery: '' // Add searchQuery property
+      searchQuery: '', // Add searchQuery property
+      showDetails: "false",
+      hoveredRowIndex: null, // Track the index of the currently hovered row
+      selectedPlayer: null, // Track the player corresponding to the hovered row
+      showInfoBox: false, // Control visibility of InfoBox
     };
   },
-  mounted() {
-    const { teamId, division } = this.teamId;
-     this.selectedDivision = division;
+  mounted() 
+  {
+    console.log('NHLTeamPlayers component mounted');
+    const { teamId } = this;
+    
      // Example: Fetch data using teamId and division
-     this.fetchTeamPlayers(teamId, division);
+     this.fetchTeamPlayers(teamId);
     // Now you can use teamId and division directly in this component
+    // Emit an event to notify the parent component
+    if (this.emitEventOnMount) {
+    this.$emit('nhlTeamPlayersMounted');
+  }
   },
   computed: {
     filteredPlayers() {
@@ -117,6 +130,11 @@ export default {
     },
   },
   methods: {
+    goToDivisionPage() {
+      console.log("Going to Division Page");
+      
+      this.$emit('goToDivisionPage');
+    },
     formatDate(dateString) {
       // Parse the date string
       const date = new Date(dateString);
@@ -143,6 +161,7 @@ export default {
       });
     },
     async fetchTeamPlayers(teamId) {
+      console.log("Fetching team players...");
       if (!teamId) {
         return;
       }
@@ -168,23 +187,15 @@ export default {
         dateOfBirth: athlete.dateOfBirth,
         debutYear: athlete.debutYear
       }));
-    
+      console.log("Team players:", this.teamPlayers); // Log the teamPlayers array
       } catch (error) {
         console.error('Failed to fetch team players:', error);
       }
-    }
+    },
+ 
   },
 
-  watch: {
-    teamId: {
-      immediate: true,
-      handler(newVal, oldVal) {
-        if (newVal !== oldVal) {
-          this.fetchTeamPlayers();
-        }
-      }
-    }
-  }
+ 
 }
 </script>
 
@@ -199,4 +210,5 @@ export default {
     border-radius: 5px;
     cursor: pointer;
   }
+ 
 </style>

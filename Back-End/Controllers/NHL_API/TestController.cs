@@ -15,9 +15,9 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTest([FromHeader] string division) { 
+        public async Task<IActionResult> GetTest([FromHeader] string teamId) { 
   
-            if (string.IsNullOrEmpty(division))
+            if (string.IsNullOrEmpty(teamId))
             {
                 return BadRequest("division ID is required");
             }
@@ -25,9 +25,9 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
             try
             {
                 Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("division{0}", division);
+                Console.WriteLine("teamId{0}", teamId);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://sports-information.p.rapidapi.com/nhl/standings?year=2024&group={division}");
+                var uri = new Uri($"https://sports-information.p.rapidapi.com/nhl/team-players/{teamId}");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {

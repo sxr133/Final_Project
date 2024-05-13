@@ -27,7 +27,6 @@
           <!-- NHL Division Component -->
           <NHLDivision 
             :showDivisionOptionTable = "showDivisionOptionTable"
-            :selectedDivision="selectedDivision" 
             @teamSelected = "showTeamPlayers" 
           />
         </div>
@@ -35,7 +34,8 @@
         <!-- NHL Team Players Component -->
         <NHLTeamPlayers v-if="showNHLTeamPlayers" 
           :teamId="selectedTeamId" 
-          @divisionSelected="handleDivisionSelected"
+          :emitEventOnMount="true"
+          @nhlTeamPlayersMounted="handleNHLTeamPlayersMounted"
         />
 
     </div>
@@ -43,11 +43,9 @@
 </template>
 
 <script>
-
-
-import NHLConference from './nhl/NHLConference.vue';
-import NHLDivision from './nhl/NHLDivision.vue';
-import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
+  import NHLConference from './nhl/NHLConference.vue';
+  import NHLDivision from './nhl/NHLDivision.vue';
+  import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
 
   export default {
     components:{
@@ -63,7 +61,6 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         showNHLTable: false,
         showDivisionOptionTable: false,
         showNHLTeamPlayers: false,
-        showNHLPlayersTable: false,
         selectedTeamId: null,
         selectedDivision: null,
 
@@ -83,26 +80,26 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
       };
     },
     methods: {
-      handleDivisionSelected(division) {
-        this.selectedDivision = division; // Set the selectedDivision value
-        console.log('Division selected:', this.selectedDivision);
-        this.showNHLTeamPlayers = false;
-      },
+      handleNHLTeamPlayersMounted() {
+        console.log("Hello");
+      this.showDropDown = true;
+      this.showNHLTeamPlayers = false;
+    },
      showStats(option) {
 
         this.showNHLTable = false;
         this.showDivisionOptionTable = false;
 
         if (option === 'Conferences') {
-        // Logic for showing conference stats
-        this.showNHLTable = !this.showNHLTable;
-        this.showDivisionOptionTable = false;
-      } else if (option === 'Divisions') {
-        // Logic for showing division stats
-        this.showDivisionOptionTable = !this.showDivisionOptionTable;
-        this.showNHLTable = false;
-      }
-    },
+          // Logic for showing conference stats
+          this.showNHLTable = !this.showNHLTable;
+          this.showDivisionOptionTable = false;
+        } else if (option === 'Divisions') {
+          // Logic for showing division stats
+          this.showDivisionOptionTable = !this.showDivisionOptionTable;
+          this.showNHLTable = false;
+        }
+      },
       showTable(league) {
         
         if (league === 'nhl') {
@@ -186,10 +183,10 @@ import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
         }
       },
        // Update this method to set showNHLTeamPlayers to true and selectedTeamId to the selected team's ID
-    showTeamPlayers(teamId, division) {
-      this.showNHLTeamPlayers = true;
-      this.selectedTeamId = teamId;
-      this.selectedDivision = division;
+      showTeamPlayers(teamId) {
+        this.showNHLTeamPlayers = true;
+        this.selectedTeamId = teamId;
+
       }
     }
   };
