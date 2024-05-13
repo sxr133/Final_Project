@@ -34,7 +34,8 @@
         <!-- NHL Team Players Component -->
         <NHLTeamPlayers v-if="showNHLTeamPlayers" 
           :teamId="selectedTeamId" 
-          @goToDivisionPage="handleGoToDivisionPage"
+          :emitEventOnMount="true"
+          @nhlTeamPlayersMounted="handleNHLTeamPlayersMounted"
         />
 
     </div>
@@ -79,7 +80,11 @@
       };
     },
     methods: {
-
+      handleNHLTeamPlayersMounted() {
+        console.log("Hello");
+      this.showDropDown = true;
+      this.showNHLTeamPlayers = false;
+    },
      showStats(option) {
 
         this.showNHLTable = false;
@@ -182,15 +187,6 @@
         this.showNHLTeamPlayers = true;
         this.selectedTeamId = teamId;
 
-      },
-      handleGoToDivisionPage() {
-        console.log("the emit is working");
-         // Logic to navigate to the Division Page with appropriate settings
-        this.showDropDown = true;
-        this.selectedStats = "Divisions"; // Set the dropdown value to 'Divisions'
-        this.showNHLTeamPlayers = false; // Hide NHL conference table if it's visible
-        this.showDivisionOptionTable = true; // Show NHL division table
-        this.selectedDivision = 'NHL'; // Set the selected division to NHL
       }
     }
   };

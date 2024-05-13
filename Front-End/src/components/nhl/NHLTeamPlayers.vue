@@ -4,9 +4,9 @@
       <!-- Search input -->
       <input type="text" v-model="searchQuery" placeholder="Search..." class="text-gray-400 uppercase dark:bg-gray-800 my-5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 placeholder-opacity-100">
 
-      <div>
-        <button class="back-button" @click="goToDivisionPage">Go to Division Page</button>
-      </div>
+      <router-link :to="'/division'">
+        Go to Division Page
+      </router-link>
 
       <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
           <colgroup>
@@ -81,7 +81,11 @@ export default {
     teamId: {
       type: Number,
       required: true,
-    }
+    },
+    emitEventOnMount: {
+    type: Boolean,
+    default: false
+  }
 
   },
 
@@ -106,6 +110,10 @@ export default {
      // Example: Fetch data using teamId and division
      this.fetchTeamPlayers(teamId);
     // Now you can use teamId and division directly in this component
+    // Emit an event to notify the parent component
+    if (this.emitEventOnMount) {
+    this.$emit('nhlTeamPlayersMounted');
+  }
   },
   computed: {
     filteredPlayers() {
@@ -124,6 +132,7 @@ export default {
   methods: {
     goToDivisionPage() {
       console.log("Going to Division Page");
+      
       this.$emit('goToDivisionPage');
     },
     formatDate(dateString) {

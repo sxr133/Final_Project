@@ -9,9 +9,12 @@
               <label for="email" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Email</label>
               <input v-model="email" type="text" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" autocomplete="username" required />
             </div>
-            <div class="mb-4">
+            <div  class="relative mb-4">
                 <label for="password" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Password</label>
                 <input v-model="password" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" autocomplete="current-password" required/>
+                <button type="button" class="absolute inset-y-0 right-0 flex items-center px-3 py-1 text-red-600" @click="togglePasswordVisibility">
+                  <font-awesome-icon :icon="showPassword ? 'eye-slash' : 'eye'" />
+                </button>
             </div>
             <div  class="flex justify-between">
               <button type="submit" class="px-7 py-3 md:px-9 md:py-4 font-medium md:font-semibold bg-gray-700 text-gray-50 text-sm rounded-md hover:bg-gray-50 hover:text-gray-700 transition ease-linear duration-500">Login</button>
@@ -28,10 +31,18 @@
 import axios from 'axios'; // Import Axios
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 export default {
   // Define the loginSuccess event
-
+  components: {
+    FontAwesomeIcon
+  },
+  data() {
+    return {
+      showPassword: false
+    }
+  },
   setup(_, { emit }) { // Destructure emit from context
     
     const email = ref('');
@@ -69,5 +80,11 @@ export default {
     };
     return { email, password, login };
   },
+  methods: {
+    togglePasswordVisibility() {
+      console.log('togglePasswordVisibility called');
+      this.showPassword = !this.showPassword;
+    }
+  }
 };
 </script>
