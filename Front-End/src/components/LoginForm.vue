@@ -7,11 +7,14 @@
           <form @submit.prevent="login">
             <div class="mb-4">
               <label for="email" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Email</label>
-              <input v-model="email" type="text" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" autocomplete="username" required />
+              <input v-model="email" type="text" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Username" autocomplete="username" />
             </div>
-            <div class="mb-4">
+            <div class="flex flex-col relative mb-4">
                 <label for="password" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Password</label>
-                <input v-model="password" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" autocomplete="current-password" required/>
+                <button type="button" class="absolute inset-y-14 right-0 flex items-center px-3 py-1 text-slate-100" @click="togglePasswordVisibility">
+                  <font-awesome-icon :icon="showPassword ? 'fa-eye-slash' : 'eye'" />
+                </button>
+                <input v-model="password" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" autocomplete="current-password"/>
             </div>
             <div  class="flex justify-between">
               <button type="submit" class="px-7 py-3 md:px-9 md:py-4 font-medium md:font-semibold bg-gray-700 text-gray-50 text-sm rounded-md hover:bg-gray-50 hover:text-gray-700 transition ease-linear duration-500">Login</button>
@@ -28,8 +31,23 @@
 import axios from 'axios'; // Import Axios
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faEyeSlash);
+library.add(faEye);
 
 export default {
+  components: {
+    FontAwesomeIcon
+  },
+  method: {
+    togglePasswordVisibility() {
+      console.log('togglePasswordVisibility called');
+      this.showPassword = !this.showPassword;
+    },
+  },  
   // Define the loginSuccess event
 
   setup(_, { emit }) { // Destructure emit from context
@@ -57,6 +75,9 @@ export default {
           // that falls out of the range of 2xx
           console.error('Login failed with status:', error.response.status);
           console.error('Response data:', error.response.data);
+          if (error.response.data.message == "Invalid email address"){
+            console.log("invalid response asdfasdf");
+          }
         } else if (error.request) {
           // The request was made but no response was received
           console.error('No response received:', error.request);
