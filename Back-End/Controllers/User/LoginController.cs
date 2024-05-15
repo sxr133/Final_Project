@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Sports_Stats_Back_End.Controllers.Validation.UserLogin;
 using Sports_Stats_Back_End.Data;
 
 namespace Sports_Stats_Back_End.Controllers.User
@@ -18,7 +19,15 @@ namespace Sports_Stats_Back_End.Controllers.User
         [HttpPost]
         public IActionResult Login(LoginRequest request)
         {
-           try
+
+            // Validate email using EmailValidator class
+            if (!EmailValidation.IsValidEmail(request.Email))
+            {
+                // Invalid email format
+                return BadRequest(new { Message = "Invalid email address" });
+            }
+
+            try
             {
                 var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
                 
