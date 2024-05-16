@@ -33,5 +33,11 @@ namespace Sports_Stats_Back_End.Models
         [Required(ErrorMessage = "Password is required")]
         [StringLength(100, ErrorMessage = "Password must be at least 6 characters", MinimumLength = 6)]
         public string Password { get; set; }
+
+        // Add the verification token property
+        public string VerificationToken { get; set; }
+
+        // Add IsEmailVerified token property
+        public bool IsEmailVerified { get; set; }
     }
 }
