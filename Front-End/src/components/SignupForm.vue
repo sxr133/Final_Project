@@ -64,7 +64,11 @@
               <label for="password" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Password<span class="text-red-500">*</span></label>
             </div>
           </div>
-
+          <div>
+            <!-- Hidden input fields for verification token and email verification status -->
+            <input type="hidden" v-model="userSignup.VerificationToken">
+            <input type="hidden" v-model="userSignup.IsEmailVerified">
+          </div>
           <div class="flex justify-between">
             <button  type="submit" class="px-7 py-3 md:px-9 md:py-4 font-medium md:font-semibold bg-gray-700 text-gray-50 text-sm rounded-md hover:bg-gray-50 hover:text-gray-700 transition ease-linear duration-500">Register</button>
             <router-link :to="'/'" class="px-7 py-3 md:px-9 md:py-4 font-medium md:font-semibold bg-gray-700 text-gray-50 text-sm rounded-md hover:bg-gray-50 hover:text-gray-700 transition ease-linear duration-500">Cancel</router-link>
@@ -102,7 +106,9 @@ export default {
         Zip_Post_Cd: '',
         Country: '',
         Email: '',
-        Password: ''
+        Password: '',
+        VerificationToken: ' ',
+        IsEmailVerified: false
       }
     }
   },
@@ -123,7 +129,9 @@ export default {
           Zip_Post_Cd: this.userSignup.Zip_Post_Cd,
           Country: this.userSignup.Country,
           Email: this.userSignup.Email,
-          Password: this.userSignup.Password
+          Password: this.userSignup.Password,
+          VerificationToken: this.userSignup.VerificationToken,
+          IsEmailVerified: this.userSignup.IsEmailVerified
         };
 
         console.log("userData data:", userData); // Log userSignup data

@@ -93,3 +93,5 @@ Back-End/.vs/Back-End/FileContentIndex/ce149cab-3724-45f8-b5e9-12d7edf36612.vsid
 /Back-End/.vs/Back-End/FileContentIndex
 /Back-End/bin/Release/net8.0
 /Back-End/obj/Release/net8.0
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
