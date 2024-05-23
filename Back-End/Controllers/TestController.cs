@@ -15,19 +15,12 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTest([FromHeader] string teamId) { 
+        public async Task<IActionResult> GetTest() { 
   
-            if (string.IsNullOrEmpty(teamId))
+          try
             {
-                return BadRequest("division ID is required");
-            }
-
-            try
-            {
-                Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("teamId{0}", teamId);
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://sports-information.p.rapidapi.com/nhl/team-players/{teamId}");
+                var uri = new Uri($"https://api-basketball-nba.p.rapidapi.com/nbastandings?year=2024&group=division");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -35,8 +28,8 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                     RequestUri = uri,
                     Headers =
                     {
-                        { "X-RapidAPI-Key", "247fad3da0msh0578dc9195d4f0bp1c399ejsnbe542042ec49" },
-                        { "X-RapidAPI-Host", "sports-information.p.rapidapi.com" },
+                        { "X-RapidAPI-Key", "9e673511f7mshf50a8bb66cecc6cp10c387jsn2542bfbedbf6" },
+                        { "X-RapidAPI-Host", "api-basketball-nba.p.rapidapi.com" },
                     },
                 };
 

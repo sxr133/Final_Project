@@ -11,10 +11,10 @@
             </div>
             <div class="flex flex-col relative mb-4">
                 <label for="password" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Password</label>
+                <input v-model="password" id="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
                 <button type="button" class="absolute inset-y-14 right-0 flex items-center px-3 py-1 text-slate-100" @click="togglePasswordVisibility">
                   <font-awesome-icon :icon="showPassword ? 'fa-eye-slash' : 'eye'" />
                 </button>
-                <input v-model="password" type="password" id="password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Password" autocomplete="current-password"/>
             </div>
             <div  class="flex justify-between">
               <button type="submit" class="px-7 py-3 md:px-9 md:py-4 font-medium md:font-semibold bg-gray-700 text-gray-50 text-sm rounded-md hover:bg-gray-50 hover:text-gray-700 transition ease-linear duration-500">Login</button>
@@ -42,10 +42,12 @@ export default {
   components: {
     FontAwesomeIcon
   },
-  method: {
+  methods: {
     togglePasswordVisibility() {
       console.log('togglePasswordVisibility called');
+      console.log("showPassword set to: ", this.showPassword);
       this.showPassword = !this.showPassword;
+      console.log("showPassword set to: ", this.showPassword);
     },
   },  
   // Define the loginSuccess event
@@ -54,6 +56,7 @@ export default {
     
     const email = ref('');
     const password = ref('');
+    const showPassword = ref(false); // Define showPassword as reactive ref
     const router = useRouter(); // Access router instance
 
     const login = async () => { // Make login function async to use await
@@ -88,7 +91,7 @@ export default {
         // Handle login failure
       }
     };
-    return { email, password, login };
+    return { email, password, login, showPassword };
   },
 };
 </script>

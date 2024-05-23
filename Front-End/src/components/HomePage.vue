@@ -10,7 +10,7 @@
           </div>
         </div>
 
-        <div v-if="showDropDown && !showNHLTeamPlayers" class="flex justify-center my-4">
+        <div v-if="(showDropDown && !showNHLTeamPlayers) || (showDropDown && !showNBATeamPlayers)" class="flex justify-center my-4">
           <select v-model="selectedStats" @change="showStats(selectedStats)" class="block w-1/2 p-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
             <option value="Select" disabled selected>Select an option</option>
             <option value="Conferences">Conferences</option>
@@ -19,39 +19,59 @@
         </div>
 
         <!-- NHL Conference Component -->
-        <NHLConference 
-          :showNHLTable="showNHLTable"
+        <div v-if="currentLeague === 'nhl'">
+          <NHLConference 
+            :showNHLTable="showNHLTable"
           
-        />
-        <div v-if="!showNHLTeamPlayers">
-          <!-- NHL Division Component -->
-          <NHLDivision 
-            :showDivisionOptionTable = "showDivisionOptionTable"
-            @teamSelected = "showTeamPlayers" 
+          />
+        
+          <div v-if="!showNHLTeamPlayers">
+            <!-- NHL Division Component -->
+            <NHLDivision 
+              :showDivisionOptionTable = "showDivisionOptionTable"
+              @teamSelected = "showTeamPlayers" 
+            />
+          </div>
+
+          <!-- NHL Team Players Component -->
+          <NHLTeamPlayers v-if="showNHLTeamPlayers" 
+            :teamId="selectedTeamId" 
+            @goToDivisionPage="handleGoToDivisionPage"
           />
         </div>
+        
+        <div v-if="currentLeague === 'nba'">
+          <NBAConference 
+            :showNBATable="showNBATable"
+          />
 
-        <!-- NHL Team Players Component -->
-        <NHLTeamPlayers v-if="showNHLTeamPlayers" 
-          :teamId="selectedTeamId" 
-          @goToDivisionPage="handleGoToDivisionPage"
-        />
+          <div v-if="!showNBATeamPlayers">
+            <!-- NHL Division Component -->
+            <NBADivision 
+              :showDivisionOptionTable = "showDivisionOptionTable"
+            />
+          </div>
+        </div>
 
     </div>
   </section>
 </template>
 
 <script>
+  import NBAConference from './nba/NBAConference.vue';
+  import NBADivision from './nba/NBADivision.vue';
   import NHLConference from './nhl/NHLConference.vue';
   import NHLDivision from './nhl/NHLDivision.vue';
   import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
 
   export default {
     components:{
+      NBAConference,
+      NBADivision,
       NHLConference,
       NHLDivision,
       NHLTeamPlayers
-
+      
     },
     data() {
       return {
@@ -64,17 +84,13 @@
         selectedDivision: null,
 
         currentLeague: null,
-        showMLBTable: false,
-        showMLBALTable: false,
-        showMLBNLTable: false,
-        showMLBWesternDivisionTitle: false,
-        showMLBEasternDivisionTitle: false,
 
         showNBATable: false,
         showNBAWesternTable: false,
         showNBAEasternTable: false,
         showNBAWesternDivisionTitle: false,
         showNBAEasternDivisionTitle: false,
+        showNBATeamPlayers: false,
         
       };
     },
@@ -83,59 +99,60 @@
      showStats(option) {
 
         this.showNHLTable = false;
+        this.showNBATable = false;
         this.showDivisionOptionTable = false;
 
-        if (option === 'Conferences') {
-          // Logic for showing conference stats
-          this.showNHLTable = !this.showNHLTable;
-          this.showDivisionOptionTable = false;
-        } else if (option === 'Divisions') {
-          // Logic for showing division stats
-          this.showDivisionOptionTable = !this.showDivisionOptionTable;
-          this.showNHLTable = false;
+        if (this.currentLeague === 'nhl') {
+          console.log("inside the current league of NHL");
+          if (option === 'Conferences') {
+            // Logic for showing conference stats
+            this.showNHLTable = !this.showNHLTable;
+            this.showDivisionOptionTable = false;
+          } else if (option === 'Divisions') {
+            // Logic for showing division stats
+            this.showDivisionOptionTable = !this.showDivisionOptionTable;
+            this.showNHLTable = false;
+          }
+        }else if (this.currentLeague === 'nba') {
+          console.log("inside the current league of NBA");
+          if (option === 'Conferences') {
+            console.log("inside the conference for NBA");
+            // Logic for showing conference stats
+            this.showNBATable = !this.showNBATable;
+            this.showDivisionOptionTable = false;
+          } else if (option === 'Divisions') {
+            // Logic for showing division stats
+            console.log("inside the division for NBA");
+            this.showDivisionOptionTable = !this.showDivisionOptionTable;
+            this.showNBATable = false;
+          }
         }
       },
       showTable(league) {
         
         if (league === 'nhl') {
+          console.log("NHL Selected");
           this.currentLeague = 'nhl';
           this.showDropDown = true;
           
           this.showMLBTable = false;
           this.showNBATable = false;
           this.showNHLTeamPlayers = false;
+          this.showNBATeamPlayers = false;
           this.selectedStats = "Select";
           this.showDivisionOptionTable = false;
-        } else if (league === 'mlb') {
-          this.currentLeague = 'mlb';
-          this.showMLBTable = !this.showMLBTable;
-          this.showNHLTable = false;
-          this.showNHLWesternDivisionTitle = false;
-          this.showNHLEasternDivisionTitle = false;
-          this.showNHLWesternTable = false;
-          this.showNHLEasternTable = false;
-          this.showNBATable = false;
-          this.showNBAWesternDivisionTitle = false;
-          this.showNBAEasternDivisionTitle = false;
-          this.showNBAWesternTable = false;
-          this.showNBAEasternTable = false;
         } else if (league === 'nba') {
+          console.log("NBA Selected")
           this.currentLeague = 'nba';
-          this.showNBATable = !this.showNBATable;
-          this.showNBAWesternDivisionTitle = false;
-          this.showNBAEasternDivisionTitle = false;
+          this.showDropDown = true;
+          this.showNBATeamPlayers = false;
           this.showNBAWesternTable = false;
           this.showNBAEasternTable = false;
           this.showNHLTable = false;
           this.showMLBTable = false;
-          this.showMLBWesternDivisionTitle = false;
-          this.showMLBEasternDivisionTitle = false;
-          this.showMLBALTable = false;
-          this.showMLBNLTable = false;
-          this.showNHLWesternDivisionTitle = false;
-          this.showNHLEasternDivisionTitle = false;
-          this.showNHLWesternTable = false;
-          this.showNHLEasternTable = false;
+          this.showNHLTeamPlayers = false;
+          this.selectedStats = "Select";
+          this.showDivisionOptionTable = false;
         }
       },
       showNHLDivision(conference) {

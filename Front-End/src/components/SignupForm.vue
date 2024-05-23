@@ -58,7 +58,7 @@
 
             <div class="flex flex-col relative mb-2">
               <input v-model="userSignup.Password" id="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
-              <button type="button" class="absolute inset-y--10 right-0 flex items-center px-3 py-1 text-slate-100" @click="togglePasswordVisibility">
+              <button type="button" class="absolute inset-y-10 right-0 flex items-center px-3 py-1 text-slate-100" @click="togglePasswordVisibility">
                 <font-awesome-icon :icon="showPassword ? 'fa-eye-slash' : 'eye'" />
               </button>
               <label for="password" class="block mb-2 text-2xl font-medium text-black-900 dark:text-black">Password<span class="text-red-500">*</span></label>

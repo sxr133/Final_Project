@@ -48,7 +48,7 @@
               <th scope="col" class="px-6 py-3">Player OverAll Stats</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             <tr v-for="(player, index) in filteredPlayers" :key="index" 
               :class="{ 'bg-white dark:bg-gray-900': index % 2 === 0, 'bg-gray-50 dark:bg-gray-800': index % 2 !== 0 }"
               class="border-b dark:border-gray-700 px-6 py-4 text-gray-400">
@@ -63,12 +63,10 @@
               <td class="px-6 py-4 text-gray-400 text-center">{{ formatDate(player.dateOfBirth) }}</td>
               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
-            
             </tr>  
-                     
-
           </tbody>
         </table>
+        
       </div>
     </div>
 </template>
@@ -93,9 +91,6 @@ export default {
       teamPlayers: [],
       searchQuery: '', // Add searchQuery property
       showDetails: "false",
-      hoveredRowIndex: null, // Track the index of the currently hovered row
-      selectedPlayer: null, // Track the player corresponding to the hovered row
-      showInfoBox: false, // Control visibility of InfoBox
     };
   },
   mounted() 
@@ -105,7 +100,6 @@ export default {
     
      // Example: Fetch data using teamId and division
      this.fetchTeamPlayers(teamId);
-    // Now you can use teamId and division directly in this component
   },
   computed: {
     filteredPlayers() {
@@ -201,5 +195,4 @@ export default {
     border-radius: 5px;
     cursor: pointer;
   }
- 
 </style>
