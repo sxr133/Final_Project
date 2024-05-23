@@ -33,18 +33,17 @@
               </tr>
             </thead>
         <tbody>
-
-
               <tr v-for="(team, index) in nhlTeams" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
-                <td class="px-6 py-4 text-gray-400">{{ team.displayName }}</td>
+                <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
+                  <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
+                  <span class="block text-center">{{ team.displayName }}</span>
+                </td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.wins}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.losses}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.overtimeWins}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.overtimeLosses}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.points}}</td>
               </tr>
-
-
         </tbody>
       </table>
     </div>
@@ -92,6 +91,8 @@
                 // console.log(displayName); // Debugging output
                 // this.nhlTeams.push(displayName); // Push the displayName into nhlTeams array
                 const teamData = {
+                 // Access the first logo URL if available, or handle multiple logos as needed
+                  teamLogo: entry.team.logos.length > 0 ? entry.team.logos[0].href : '',
                   displayName: entry.team.displayName
                 };
 
