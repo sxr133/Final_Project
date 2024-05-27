@@ -5,8 +5,8 @@
       <div class="flex justify-center my-4">
         <select v-model="selectedDivision" @change="fetchDivisionStandings" class="block w-1/2 p-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
           <option value="Select" disabled selected>Select a Division</option>
-          <option value="Western Conference">Western Conference</option>
-          <option value="Eastern Conference">Eastern Conference</option>
+          <option value="Western Conference">Western</option>
+          <option value="Eastern Conference">Eastern</option>
         </select>
       </div>
     </div>
@@ -16,15 +16,13 @@
       <template v-if="divisions[selectedDivision]">
         <template v-for="(division, divisionName) in divisions[selectedDivision]" :key="divisionName">
           <table v-if="division.length > 0" class="mt-4 border-collapse border border-gray-500">
-            
             <colgroup>
               <col style="width: 60%;">
-              <col style="width: 5%;">
-              <col style="width: 5%;">
-              <col style="width: 5%;">
-              <col style="width: 5%;">
-              <col style="width: 5%;">
-              <col style="width: 15%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
             </colgroup>
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
               <tr>
@@ -34,32 +32,32 @@
                 <th scope="col" class="px-6 py-3">Team</th>
                 <th scope="col" class="px-6 py-3">Wins</th>
                 <th scope="col" class="px-6 py-3">Losses</th>
-                <th scope="col" class="px-6 py-3">OT Wins</th>
-                <th scope="col" class="px-6 py-3">OT Losses</th>
-                <th scope="col" class="px-6 py-3">Points</th>
-                <th scope="col" class="px-6 py-3">Team</th>
+                <th scope="col" class="px-6 py-3">PCT</th>
+                <th scope="col" class="px-6 py-3">Games Behind</th>
+                <th scope="col" class="px-6 py-3">Team Roster</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(team, index) in division" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+                <!-- Team information -->
                 <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
-                  <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
+                  <img class="block w-12 h-12 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
                   <span class="block text-center">{{ team.displayName }}</span>
                 </td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
-                <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
-                <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
-                <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-                <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
-              </tr>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins / (team.wins + team.losses)) * 100).toFixed(1) }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins - division[0].wins) / 2) + ((division[0].losses - team.losses) / 2) }}</td> 
+                <!-- Actions -->
+                <td class="px-6 py-4 text-gray-400 text-center">
+                  <router-link :to="'/NBA-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
+                </td>
+              </tr>            
             </tbody>
           </table>
         </template>
       </template>
-      <template v-else>
-        <div class="text-center py-4 text-gray-700">No data available for the selected division.</div>
-      </template>
+      
     </div>
   </div>
 </template>
@@ -86,25 +84,30 @@
             'Central Division': [],
             'Southeast Division': []
           }
-        }
+        },
+        easternDivisionWinsDiff: 0,
+        easternDivisionLossesDiff: 0,  
+        westernDivisionWinsDiff: 0,
+        westernDivisionLossesDiff: 0,
       };
     },
     methods: {
       async fetchDivisionStandings() {
-    this.isLoading = true; // Set loading of API to true when the call starts
-    const endpoint = `https://localhost:7102/api/NBADivision`;
-    console.log("i get here inside the fetch");
-    try {
-        console.log("i get here inside the try");
-        const response = await axios.get(endpoint);
+        // Set loading of API to true when the call starts
+        this.isLoading = true; 
+        const endpoint = `https://localhost:7102/api/NBADivision`;
+        console.log("i get here inside the fetch");
+        try {
+          console.log("i get here inside the try");
+          const response = await axios.get(endpoint);
 
-        // Check if response.data.response exists
-        if (response.data && response.data.children) {
-            const conferences = response.data.children;
+          // Check if response.data.response exists
+          if (response.data && response.data.body) {
+            const teams = response.data.body;
             console.log("response.data contains ", response.data);
 
             // Initialize divisions object
-            const divisions = {
+            this.divisions = {
                 'Western Conference': {
                     'Northwest Division': [],
                     'Pacific Division': [],
@@ -117,67 +120,40 @@
                 }
             };
 
-            // Function to initialize divisions arrays
-            const initializeDivisions = () => {
-                for (const conference in divisions) {
-                    for (const division in divisions[conference]) {
-                        divisions[conference][division] = [];
-                    }
-                }
-            };
-
-            // Function to extract team data and populate divisions
-            const populateDivisions = (conference, conferenceName) => {
-              conference.forEach(division => {
-                  const divisionName = division.name + ' Division';
-                  // Ensure division.standings exists and has entries before mapping
-                  if (division.standings && division.standings.entries) {
-                      divisions[conferenceName][divisionName] = division.standings.entries.map(entry => ({
-                         // Access the first logo URL if available, or handle multiple logos as needed
-                          teamLogo: entry.team.logos.length > 0 ? entry.team.logos[0].href : '',
-                          displayName: entry.team.displayName,
-                          wins: entry.stats.find(stat => stat.name === 'wins')?.value || 0,
-                          losses: entry.stats.find(stat => stat.name === 'losses')?.value || 0,
-                          gamesBehind: entry.stats.find(stat => stat.name === 'gamesBehind')?.value || 0,
-                          conference: conferenceName,
-                          division: divisionName
-                      }));
-                  }
+            // Function to populate divisions for each conference
+            const populateDivisions = (team) => {
+              this.divisions[team.conference][team.division + ' Division'].push({
+                teamLogo: team.espnLogo1,
+                teamAbv : team.teamAbv,
+                displayName: `${team.teamCity} ${team.teamName}`,
+                wins: parseInt(team.wins),
+                losses: parseInt(team.loss)
               });
             };
 
-            // Initialize divisions arrays
-            initializeDivisions();
+            // Populate divisions for each team
+            teams.forEach(team => {
+              console.log("team", team);
+              populateDivisions(team);
+            });
 
-            console.log('Conferences:', conferences);
-
-            // Populate divisions for each conference
-            console.log('Filtered West Conference:', conferences.filter(conf => conf.abbreviation === 'West'));
-            console.log('Filtered East Conference:', conferences.filter(conf => conf.abbreviation === 'East'));
-
-            // Populate divisions for each conference
-            populateDivisions(conferences.find(conf => conf.abbreviation === 'West')?.children, 'Western Conference');
-            populateDivisions(conferences.find(conf => conf.abbreviation === 'East')?.children, 'Eastern Conference');
-
-            // Sort the teams within each division by wins
-            for (const conference in divisions) {
-                for (const division in divisions[conference]) {
-                    divisions[conference][division].sort((a, b) => b.wins - a.wins);
+             // Sort the teams within each division by wins
+             for (const league in this.divisions) {
+                for (const division in this.divisions[league]) {
+                    this.divisions[league][division].sort((a, b) => b.wins - a.wins);
                 }
             }
 
-            // Assign the divisions object to this.divisions
-            this.divisions = divisions;
-
             // Now divisions object contains the structured data
             console.log(this.divisions);
+          }
+        } catch (error) {
+          console.error('Error fetching division standings:', error);
+        } finally {
+          // Set loading state to false after API call completes
+          this.isLoading = false;
         }
-    } catch (error) {
-        console.error('Error fetching division standings:', error);
-    } finally {
-        this.isLoading = false; // Set loading state to false after API call completes
+      },
     }
-},
-},
   };
 </script>
