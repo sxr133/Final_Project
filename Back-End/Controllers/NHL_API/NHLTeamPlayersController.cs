@@ -8,26 +8,29 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
     public class NHLTeamPlayersController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
-        public NHLTeamPlayersController(IHttpClientFactory clientFactory)
+        public NHLTeamPlayersController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLTeamPlayers([FromHeader] string teamId)
+        public async Task<IActionResult> GetNHLTeamPlayers([FromHeader] string teamAbv)
         {
-            if (string.IsNullOrEmpty(teamId))
+            if (string.IsNullOrEmpty(teamAbv))
             {
-                return BadRequest("Team ID is required");
+                return BadRequest("Team Abbreviation is required");
             }
 
             try
             {
                 Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Team Id {0}", teamId);
+                Console.WriteLine("Team Abv {0}", teamAbv);
+                string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/nhlteamplayers?teamid={teamId}");
+                var uri = new Uri($"https://tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com/getNHLTeamRoster?teamAbv={teamAbv}&getStats=totals");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -35,9 +38,9 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                     RequestUri = uri,
                     Headers =
                     {
-                        { "X-RapidAPI-Key", "247fad3da0msh0578dc9195d4f0bp1c399ejsnbe542042ec49" },
-                        { "X-RapidAPI-Host", "nhl-api5.p.rapidapi.com" },
-                    },
+                        { "X-RapidAPI-Key", apiKey },
+                        { "X-RapidAPI-Host", "tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com" },
+                    }
                 };
 
                 using (var response = await client.SendAsync(request))

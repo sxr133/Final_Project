@@ -1,22 +1,27 @@
 using Sports_Stats_Back_End.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    options.UseSqlServer("Data Source=DESKTOP-991CSD7\\SPORTSSTATS;Initial Catalog=SportsStatsDB;Integrated Security=True; TrustServerCertificate=True");
-});
-
 // Register HttpClientFactory
 builder.Services.AddHttpClient();
+
+// Add IConfiguration
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+// Add DbContext
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 

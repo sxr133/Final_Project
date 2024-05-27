@@ -1,43 +1,39 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLPlayersStatsController : ControllerBase
+    public class NHLConferenceController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
-        public NHLPlayersStatsController(IHttpClientFactory clientFactory)
+        public NHLConferenceController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLPlayerStats([FromHeader] string playerId)
+        public async Task<IActionResult> GetNHLConference()
         {
-            if (string.IsNullOrEmpty(playerId))
-            {
-                return BadRequest("Team ID is required");
-            }
-
             try
             {
-                Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Player Id {0}", playerId);
+                var apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/player-statistic?playerId={playerId}");
-                Console.WriteLine("Uri {0}", uri);
+                var uri = new Uri("https://tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com/getNHLTeams?teamStats=true");
+
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
                     RequestUri = uri,
                     Headers =
                     {
-                        { "X-RapidAPI-Key", "247fad3da0msh0578dc9195d4f0bp1c399ejsnbe542042ec49" },
-                        { "X-RapidAPI-Host", "nhl-api5.p.rapidapi.com" },
+                        { "X-RapidAPI-Key", apiKey },
+                        { "X-RapidAPI-Host", "tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com" },
                     },
                 };
 
@@ -59,7 +55,5 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
     }
 }

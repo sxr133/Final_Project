@@ -2,17 +2,19 @@
 using Newtonsoft.Json.Linq;
 using System.Text.Json.Nodes;
 
-namespace Sports_Stats_Back_End.Controllers.NHL_API
+namespace Sports_Stats_Back_End.Controllers.NBA_API
 {
     [ApiController]
     [Route("api/[controller]")]
     public class NBADivisionController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
-        public NBADivisionController(IHttpClientFactory clientFactory)
+        public NBADivisionController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -20,8 +22,9 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
         {
             try {
                 Console.WriteLine("inside the NBADivision API");
+                string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri("https://api-basketball-nba.p.rapidapi.com/nbastandings?year=2024&group=division");
+                var uri = new Uri("https://tank01-fantasy-stats.p.rapidapi.com/getNBATeams?teamStats=true");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -29,8 +32,8 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                     RequestUri = uri,
                     Headers =
                         {
-                            { "X-RapidAPI-Key", "9e673511f7mshf50a8bb66cecc6cp10c387jsn2542bfbedbf6" },
-                            { "X-RapidAPI-Host", "api-basketball-nba.p.rapidapi.com" },
+                            { "X-RapidAPI-Key", apiKey },
+                            { "X-RapidAPI-Host", "tank01-fantasy-stats.p.rapidapi.com" },
                         },
                 };
 
