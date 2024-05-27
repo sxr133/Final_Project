@@ -1,40 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Configuration;
 
-namespace Sports_Stats_Back_End.Controllers.NHL_API
+namespace Sports_Stats_Back_End.Controllers.MLB_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TestController : ControllerBase
+    public class MLBConferenceController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
 
-        public TestController(IHttpClientFactory clientFactory, IConfiguration configuration)
+        public MLBConferenceController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
             _configuration = configuration;
-    }
+        }
 
         [HttpGet]
-        public async Task<IActionResult> GetTest()
+        public async Task<IActionResult> GetMLBConference()
         {
-           
-            try
-            {
+            try {
+                Console.WriteLine("inside the NBAConference API");
                 string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri("https://tank01-fantasy-stats.p.rapidapi.com/getNBATeams?teamStats=true");
+                var uri = new Uri("https://tank01-mlb-live-in-game-real-time-statistics.p.rapidapi.com/getMLBTeams?teamStats=true");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
                     Method = HttpMethod.Get,
                     RequestUri = uri,
                     Headers =
-                    {
-                        { "X-RapidAPI-Key", apiKey },
-                        { "X-RapidAPI-Host", "tank01-fantasy-stats.p.rapidapi.com" },
-                    },
+                        {
+                            { "X-RapidAPI-Key", apiKey },
+                            { "X-RapidAPI-Host", "tank01-mlb-live-in-game-real-time-statistics.p.rapidapi.com" },
+                        },
                 };
 
                 using (var response = await client.SendAsync(request))
@@ -55,7 +55,5 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
     }
 }

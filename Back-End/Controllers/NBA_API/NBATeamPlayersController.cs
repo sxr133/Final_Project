@@ -1,30 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
-namespace Sports_Stats_Back_End.Controllers.NHL_API
+namespace Sports_Stats_Back_End.Controllers.NBA_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TestController : ControllerBase
+    public class NBATeamPlayersController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
 
-        public TestController(IHttpClientFactory clientFactory, IConfiguration configuration)
+        public NBATeamPlayersController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
             _configuration = configuration;
-    }
+        }
 
         [HttpGet]
-        public async Task<IActionResult> GetTest()
+        public async Task<IActionResult> GetNBATeamPlayers([FromHeader] string teamAbv)
         {
-           
+            if (string.IsNullOrEmpty(teamAbv))
+            {
+                return BadRequest("Team Abbreviation is required");
+            }
+
             try
             {
+                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("Team Abv {0}", teamAbv);
                 string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri("https://tank01-fantasy-stats.p.rapidapi.com/getNBATeams?teamStats=true");
+                var uri = new Uri($"https://tank01-fantasy-stats.p.rapidapi.com/getNBATeamRoster?teamAbv={teamAbv}&statsToGet=totals");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -34,7 +41,7 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                     {
                         { "X-RapidAPI-Key", apiKey },
                         { "X-RapidAPI-Host", "tank01-fantasy-stats.p.rapidapi.com" },
-                    },
+                    }
                 };
 
                 using (var response = await client.SendAsync(request))

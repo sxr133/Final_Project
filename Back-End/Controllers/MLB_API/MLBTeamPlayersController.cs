@@ -1,33 +1,37 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 namespace Sports_Stats_Back_End.Controllers.NHL_API
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class NHLTeamStatsController : ControllerBase
+    public class MLBTeamPlayersController : ControllerBase
     {
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IConfiguration _configuration;
 
-        public NHLTeamStatsController(IHttpClientFactory clientFactory)
+        public MLBTeamPlayersController(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
             _clientFactory = clientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetNHLTeamStats([FromHeader] string teamId)
+        public async Task<IActionResult> GetMLBTeamPlayers([FromHeader] string teamAbv)
         {
-            if (string.IsNullOrEmpty(teamId))
+            if (string.IsNullOrEmpty(teamAbv))
             {
-                return BadRequest("Team ID is required");
+                return BadRequest("Team Abbreviation is required");
             }
 
             try
             {
                 Console.WriteLine("--------------------------------------------------");
-                Console.WriteLine("Team Id {0}", teamId);
+                Console.WriteLine("Team Abv {0}", teamAbv);
+                string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://nhl-api5.p.rapidapi.com/team-statistic?teamId={teamId}");
+                var uri = new Uri($"https://tank01-mlb-live-in-game-real-time-statistics.p.rapidapi.com/getMLBTeamRoster?teamAbv={teamAbv}&getStats=true");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
@@ -35,9 +39,9 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                     RequestUri = uri,
                     Headers =
                     {
-                        { "X-RapidAPI-Key", "247fad3da0msh0578dc9195d4f0bp1c399ejsnbe542042ec49" },
-                        { "X-RapidAPI-Host", "nhl-api5.p.rapidapi.com" },
-                    },
+                        { "X-RapidAPI-Key", apiKey },
+                        { "X-RapidAPI-Host", "tank01-mlb-live-in-game-real-time-statistics.p.rapidapi.com" },
+                    }
                 };
 
                 using (var response = await client.SendAsync(request))

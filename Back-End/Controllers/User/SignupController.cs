@@ -1,6 +1,4 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Sports_Stats_Back_End.Data;
 using Sports_Stats_Back_End.Models;
 using MailKit.Net.Smtp;
