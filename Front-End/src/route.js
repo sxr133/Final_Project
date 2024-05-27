@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import NHLTeamPlayers from './components/nhl/NHLTeamPlayers.vue';
+import MLBTeamPlayers from './components/mlb/MLBTeamPlayers.vue';
+import NBATeamPlayers from './components/nba/NBATeamPlayers.vue';
 import SignupForm from './components/SignupForm.vue';
 import LoginForm from './components/LoginForm.vue';
 import HomePage from './components/HomePage.vue';
@@ -20,12 +22,32 @@ const routes = [
     props: true // This ensures that route params are passed as props to the component
   },
   {
-    path: '/team-roster/:teamId',
-    name: 'team-roster',
-    component: NHLTeamPlayers,
-    props: route => ({ teamId: parseInt(route.params.teamId) }),
+    path: '/MLB-team-roster/:teamAbv',
+    name: 'mlb-team-roster',
+    component: MLBTeamPlayers,
+    props: route => ({ teamAbv: route.params.teamAbv }),
     beforeEnter: (to, from, next) => {
-      console.log('Navigating to team-roster route');
+      console.log('Navigating to MLB team-roster route');
+      next(); 
+    }
+  },
+  {
+    path: '/NHL-team-roster/:teamAbv',
+    name: 'nhl-team-roster',
+    component: NHLTeamPlayers,
+    props: route => ({ teamAbv: route.params.teamAbv }),
+    beforeEnter: (to, from, next) => {
+      console.log('Navigating to NHL team-roster route');
+      next(); 
+    }
+  },
+  {
+    path: '/NBA-team-roster/:teamAbv',
+    name: 'nba-team-roster',
+    component: NBATeamPlayers,
+    props: route => ({ teamAbv: route.params.teamAbv }),
+    beforeEnter: (to, from, next) => {
+      console.log('Navigating to NBA team-roster route');
       next(); 
     }
   },

@@ -10,167 +10,89 @@
         </select>
       </div>
     </div>
-    <div v-if="selectedDivision === 'Western Conference'" class="justify-center">
+
+    <!-- Render division tables dynamically -->
+    <div v-if="selectedDivision" class="justify-center">
+      <template v-if="divisions[selectedDivision]">
+        <template v-for="(division, divisionName) in divisions[selectedDivision]" :key="divisionName">
+          <table v-if="division.length > 0" class="mt-4 border-collapse border border-gray-500">
+            <colgroup>
+              <col style="width: 20%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+              <col style="width: 5%;">
+            </colgroup>
+            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
+              <tr>
+                <th colspan="18" class="text-center py-4 text-xl font-semibold">{{ divisionName }}</th>
+              </tr>
+              <tr>
+                <th scope="col" class="px-6 py-3" title="Team">Team</th>
+                <th scope="col" class="px-6 py-3" title="Games Played">Games Played</th>
+                <th scope="col" class="px-6 py-3" title="Wins">Wins</th>
+                <th scope="col" class="px-6 py-3" title="Losses">Losses</th>
+                <th scope="col" class="px-6 py-3" title="OverTime Losses">OT Losses</th>
+                <th scope="col" class="px-6 py-3" title="Points">Points</th>
+                <th scope="col" class="px-6 py-3" title="Points Percentage">Points %</th>
+                <th scope="col" class="px-6 py-3" title="Road Wins">RW</th>
+                <th scope="col" class="px-6 py-3" title="Road Overtime Wins">ROW</th>
+                <th scope="col" class="px-6 py-3" title="Shootout Wins">S/O Win</th>
+                <th scope="col" class="px-6 py-3" title="Goals For">GF</th>
+                <th scope="col" class="px-6 py-3" title="Goals Against">GA</th>
+                <th scope="col" class="px-6 py-3" title="Goals For per Games Played">GF/GP</th>
+                <th scope="col" class="px-6 py-3" title="Goals Against per Games Played">GA/GP</th>
+                <th scope="col" class="px-6 py-3" title="Shots per Games Played">Shots/GP</th>
+                <th scope="col" class="px-6 py-3" title="Shots Against per Games Played">SA/GP</th>
+                <th scope="col" class="px-6 py-3" title="Face-Off win Percentage">FOW%</th>
+                <th scope="col" class="px-6 py-3" title="Team Roster">Team Roster</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(team, index) in division" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+                <!-- Team information -->
+                <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
+                  <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
+                  <span class="block text-center">{{ team.displayName }}</span>
+                </td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.gamesPlayed}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.wins}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.losses}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.overtimeLosses}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.points}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ (((team.wins / team.gamesPlayed)) * 100).toFixed(1) }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.regulationWin}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.OvertimeWin}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.ShootoutWin}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.GoalsFor}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.GoalsAgainst}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ (((team.GoalsFor / team.gamesPlayed)) * 100).toFixed(1) }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ (((team.GoalsAgainst / team.gamesPlayed)) * 100).toFixed(1) }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.ShotsFor}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.ShotsAgainst}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{team.FaceOffPercentage}}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">
+                  <router-link :to="'/NHL-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
+                </td>
+              </tr>            
+            </tbody>
+          </table>
+        </template>
+      </template>
       
-      <table v-if="westernCentralTeams.length > 0" class="mt-4 border-collapse border border-gray-500" >
-        <colgroup>
-          <col style="width: 60%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 15%;">
-        </colgroup>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
-          <tr>
-            <th colspan="7" class="text-center py-4 text-xl font-semibold">Central Division</th>
-          </tr> 
-          <tr>
-            <th scope="col" class="px-6 py-3">Team</th>
-            <th scope="col" class="px-6 py-3">Wins</th>
-            <th scope="col" class="px-6 py-3">Losses</th>
-            <th scope="col" class="px-6 py-3">OT Wins</th>
-            <th scope="col" class="px-6 py-3">OT Losses</th>
-            <th scope="col" class="px-6 py-3">Points</th>
-            <th scope="col" class="px-6 py-3">Team</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(team, index) in westernCentralTeams" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
-            <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
-              <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
-              <span class="block text-center">{{ team.displayName }}</span>
-            </td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-                                                            
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
-          </tr>
-        </tbody>
-      </table>
-      <table v-if="westernPacificTeams.length > 0" class="mt-4 border-collapse border border-gray-500">
-        <colgroup>
-          <col style="width: 60%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 15%;">
-        </colgroup>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
-          <tr>
-            <th colspan="7" class="text-center py-4 text-xl font-semibold">Pacific Division</th>
-          </tr> 
-          <tr>
-            <th scope="col" class="px-6 py-3">Team</th>
-            <th scope="col" class="px-6 py-3">Wins</th>
-            <th scope="col" class="px-6 py-3">Losses</th>
-            <th scope="col" class="px-6 py-3">OT Wins</th>
-            <th scope="col" class="px-6 py-3">OT Losses</th>
-            <th scope="col" class="px-6 py-3">Points</th>
-            <th scope="col" class="px-6 py-3">Team</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(team, index) in westernPacificTeams" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
-            <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
-              <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
-              <span class="block text-center">{{ team.displayName }}</span>
-            </td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
-          </tr>
-          </tbody>
-      </table>
-    </div>
-    <div v-else-if="selectedDivision === 'Eastern Conference'" class="justify-center">
-      <table v-if="easternAtlanticTeams.length > 0" class="mt-4 border-collapse border border-gray-500">
-        <colgroup>
-          <col style="width: 60%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 15%;">
-        </colgroup>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
-          <tr>
-            <th colspan="7" class="text-center py-4 text-xl font-semibold">Atlantic Division</th>
-          </tr> 
-          <tr>
-            <th scope="col" class="px-6 py-3">Team</th>
-            <th scope="col" class="px-6 py-3">Wins</th>
-            <th scope="col" class="px-6 py-3">Losses</th>
-            <th scope="col" class="px-6 py-3">OT Wins</th>
-            <th scope="col" class="px-6 py-3">OT Losses</th>
-            <th scope="col" class="px-6 py-3">Points</th>
-            <th scope="col" class="px-6 py-3">Team</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(team, index) in easternAtlanticTeams" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
-            <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
-              <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
-              <span class="block text-center">{{ team.displayName }}</span>
-            </td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
-          </tr>
-        </tbody>
-      </table>
-      <table v-if="easternMetropolitanTeams.length > 0" class="mt-4 border-collapse border border-gray-500">
-        <colgroup>
-          <col style="width: 60%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 5%;">
-          <col style="width: 15%;">
-        </colgroup>
-        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
-          <tr>
-            <th colspan="7" class="text-center py-4 text-xl font-semibold">Metropolitan Division</th>
-          </tr> 
-          <tr>
-            <th scope="col" class="px-6 py-3">Team</th>
-            <th scope="col" class="px-6 py-3">Wins</th>
-            <th scope="col" class="px-6 py-3">Losses</th>
-            <th scope="col" class="px-6 py-3">OT Wins</th>
-            <th scope="col" class="px-6 py-3">OT Losses</th>
-            <th scope="col" class="px-6 py-3">Points</th>
-            <th scope="col" class="px-6 py-3">Team</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(team, index) in easternMetropolitanTeams" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
-            <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
-              <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
-              <span class="block text-center">{{ team.displayName }}</span>
-            </td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeWins }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.overtimeLosses }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center">{{ team.points }}</td>
-            <td class="px-6 py-4 text-gray-400 text-center"><router-link :to="'/team-roster/' + team.id" @click="$emit('teamSelected', { teamId: team.id })">View Team Roster</router-link></td>
-          </tr>
-        </tbody>
-      </table>
     </div>
   </div>
 </template>
@@ -184,102 +106,98 @@
       showDivisionOptionTable: Boolean,
 
     },
-    computed: {
-      westernCentralTeams() {
-        return this.divisions['Western Conference']['Central Division'];
-      },
-      westernPacificTeams() {
-        return this.divisions['Western Conference']['Pacific Division'];
-      },
-      easternAtlanticTeams() {
-        return this.divisions['Eastern Conference']['Atlantic Division'];
-      },
-      easternMetropolitanTeams() {
-        return this.divisions['Eastern Conference']['Metropolitan Division'];
-      }
-    },
     data(){
       return{
         selectedDivision: 'Select', // Default selection
         divisions: {
-        'Western Conference': {
-          'Central Division': [],
-          'Pacific Division': []
+          'Western Conference': {
+            'Central Division': [],
+            'Pacific Division': []
+          },
+          'Eastern Conference': {
+            'Atlantic Division': [],
+            'Metropolitan Division': []
+          }
         },
-        'Eastern Conference': {
-          'Atlantic Division': [],
-          'Metropolitan Division': []
-        }
-      }
-        
+        easternDivisionWinsDiff: 0,
+        easternDivisionLossesDiff: 0,  
+        westernDivisionWinsDiff: 0,
+        westernDivisionLossesDiff: 0,
       };
     },
-    
     methods: {
-      handleDivisionSelected(division) {
-        this.selectedDivision = division; // Set the selectedDivision value
-        console.log('Division selected:', this.selectedDivision);
-      },
       async fetchDivisionStandings() {
-        this.isLoading = true;
-        const endpoint = `https://localhost:7102/api/NHLDivisionStandings`;
+        // Set loading of API to true when the call starts
+        this.isLoading = true; 
+        const endpoint = `https://localhost:7102/api/NHLDivision`;
+        console.log("i get here inside the fetch");
         try {
-          const response = await axios.get(endpoint, {
-            headers: {
-              conference: this.selectedDivision // Sending the selected conference as a header
-            }
-          });
-          
-          // Clear previous data
-          Object.keys(this.divisions[this.selectedDivision]).forEach(key => {
-            this.divisions[this.selectedDivision][key] = [];
-          });
-          if (response.data && response.data.children) {
-            response.data.children.forEach(division => {
-              this.processDivisionData(division);
+          console.log("i get here inside the try");
+          const response = await axios.get(endpoint);
+
+          // Check if response.data.response exists
+          if (response.data && response.data.body) {
+            const teams = response.data.body;
+
+            console.log("response.data contains ", response.data);
+
+            // Initialize divisions object
+            this.divisions = {
+              'Western Conference': {
+                'Central Division': [],
+                'Pacific Division': []
+              },
+              'Eastern Conference': {
+                'Atlantic Division': [],
+                'Metropolitan Division': []
+              }
+            };
+
+            // Function to populate divisions for each conference
+            const populateDivisions = (team) => {
+              this.divisions[team.conference + ' Conference'][team.division + ' Division'].push({
+                teamAbv : team.teamAbv,
+                teamLogo: team.espnLogo1,
+                displayName: team.teamCity + " " + team.teamName,
+                gamesPlayed: team.standings.gamesPlayed,
+                wins: parseInt(team.standings.W),
+                losses: parseInt(team.standings.L),
+                overtimeLosses: parseInt(team.standings.OTL),
+                points: team.standings.points,
+                regulationWin: team.standings.resultDetail.regulationWin,
+                OvertimeWin: team.standings.resultDetail.overtimeWin,
+                ShootoutWin: team.standings.resultDetail.shootoutWin,
+                GoalsFor: team.teamStats.goals,
+                GoalsAgainst: team.teamStats.goalsAgainst,
+                ShotsFor: team.teamStats.shots,
+                ShotsAgainst: team.teamStats.shotsAgainst,
+                FaceOffPercentage: ((parseInt(team.teamStats.faceoffsWon) / parseInt(team.teamStats.faceoffs)) * 100).toFixed(1)
+              });
+            };
+
+            // Populate divisions for each team
+            teams.forEach(team => {
+              console.log("team", team);
+              populateDivisions(team);
             });
+
+             // Sort the teams within each division by wins
+             for (const league in this.divisions) {
+                for (const division in this.divisions[league]) {
+                    this.divisions[league][division].sort((a, b) => b.wins - a.wins);
+                }
+            }
+
+            // Now divisions object contains the structured data
+            console.log("division",this.divisions);
           }
         } catch (error) {
-          console.error('Error fetching NHL division standings:', error);
+          console.error('Error fetching division standings:', error);
         } finally {
+          // Set loading state to false after API call completes
           this.isLoading = false;
         }
       },
-
-      processDivisionData(division) {
-        if (!division.standings || !division.standings.entries) {
-          return;
-        }
-
-        const divisionName = division.name;
-        const divisionTeams = division.standings.entries.map(entry => this.processTeamData(entry));
-        // Initialize the division array if it doesn't exist
-        if (!this.divisions[this.selectedDivision][divisionName]) {
-          this.divisions[this.selectedDivision][divisionName] = [];
-        }
-
-        this.divisions[this.selectedDivision][divisionName].push(...divisionTeams);
-      },
-
-      processTeamData(entry) {
-        if (!entry.team || !entry.stats) {
-          return {};
-        }
-
-        const teamData = {
-          id: entry.team.id,
-          teamLogo: entry.team.logos.length > 0 ? entry.team.logos[0].href : '', 
-          displayName: entry.team.displayName
-        };
-        const statsMap = new Map(entry.stats.map(stat => [stat.name, stat.value]));
-        teamData.wins = statsMap.get('wins') || 0;
-        teamData.losses = statsMap.get('losses') || 0;
-        teamData.overtimeWins = statsMap.get('overtimeWins') || 0;
-        teamData.overtimeLosses = statsMap.get('overtimeLosses') || 0;
-        teamData.points = statsMap.get('points') || 0;
-
-        return teamData;
-      },
-    },
+    }
   };
 </script>

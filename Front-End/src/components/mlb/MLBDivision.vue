@@ -1,142 +1,153 @@
 <template>
   <div>
-    <!-- Conditional rendering of NHL table -->
-    <h1 v-if="showMLBWesternDivisionTitle" class="font-medium text-gray-400 text-3xl md:text-10xl my-10">Western Division</h1>
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table v-if="showMLBALTable" class="mt-4 border-collapse border border-gray-500">
-            <!-- Table content -->
+    <div v-if="showDivisionOptionTable" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <!-- Dropdown for selecting conference -->
+      <div class="flex justify-center my-4">
+        <select v-model="selectedDivision" @change="fetchDivisionStandings" class="block w-1/2 p-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
+          <option value="Select" disabled selected>Select a Division</option>
+          <option value="American League">American League</option>
+          <option value="National League">National League</option>
+        </select>
+      </div>
+    </div>
+
+     <!-- Render division tables dynamically -->
+     <div v-if="selectedDivision" class="justify-center">
+      <template v-if="divisions[selectedDivision]">
+        <template v-for="(division, divisionName) in divisions[selectedDivision]" :key="divisionName">
+          <table v-if="division.length > 0" class="mt-4 border-collapse border border-gray-500">
             <colgroup>
-              <col style="width: 33%;">
-              <col style="width: 2px;">
-              <col style="width: 33%;">
-              <col style="width: 2px;">
-              <col style="width: 33%;">
+              <col style="width: 60%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
             </colgroup>
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
               <tr>
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('eastern')">American League East</th>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('central')">American League Central</th>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('western')">American League West</th>
+                <th colspan="7" class="text-center py-4 text-xl font-semibold">{{ divisionName }}</th>
               </tr>
-            </thead>
-            <tbody>
-              <!-- Table body content -->
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Baltimor Orioles</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Cleveland Guardians</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Texas Rangers</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">New York Yankees</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Kansas City Royals</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Seattle Mariners</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Toronto Blue Jays</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Detroit Tigers</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Oakland Athletics</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Boston Red Sox</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Minnesota Twins</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Los Angeles Angels</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Tampa Bay Rays</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Chicago White Sox</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Houston Astros</td>
-                </tr>
-            </tbody>
-          </table>
-
-          <h1 v-if="showMLBEasternDivisionTitle" class="font-medium text-gray-400 text-3xl md:text-10xl my-10">Eastern Division</h1>
-          <table v-if="showMLBNLTable" class="mt-4 border-collapse border border-gray-500">
-            <!-- Table content -->
-            <colgroup>
-              <col style="width: 33%;">
-              <col style="width: 2px;">
-              <col style="width: 33%;">
-              <col style="width: 2px;">
-              <col style="width: 33%;">
-            </colgroup>
-            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
               <tr>
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('eastern')">National League East</th>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('central')">National League Central</th>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <th scope="col" class="px-6 py-3" @click="showMLBDivision('western')">National League West</th>
+                <th scope="col" class="px-6 py-3">Team</th>
+                <th scope="col" class="px-6 py-3">Wins</th>
+                <th scope="col" class="px-6 py-3">Losses</th>
+                <th scope="col" class="px-6 py-3">PCT</th>
+                <th scope="col" class="px-6 py-3">Games Behind</th>
+                <th scope="col" class="px-6 py-3">Team Roster</th>
               </tr>
             </thead>
             <tbody>
-              <!-- Table body content -->
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Atlanta Braves</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Milwaukee Brewers</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Los Angeles Dodgers</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Philadelphia Phillies</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Chicago Cubs</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">San Diego Padres</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">New York Mets</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Cincinati Reds</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Arizona Diamondbacks</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Washington Nationals</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Pittsburgh Pirates</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">San Francisco Giants</td>
-              </tr>
-              <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                <td class="px-6 py-4 text-gray-400">Miami Marlins</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Saint Louis Cardinals</td>
-                <th scope="col" class="px-6 py-3 bg-gray-500"></th> <!-- Empty header for separator -->
-                <td class="px-6 py-4 text-gray-400">Colorado Rockies</td>
-                </tr>
-
+              <tr v-for="(team, index) in division" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+                <!-- Team information -->
+                <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
+                  <img class="block w-12 h-12 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
+                  <span class="block text-center">{{ team.displayName }}</span>
+                </td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins / (team.wins + team.losses)) * 100).toFixed(1) }}</td>
+                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins - division[0].wins) / 2) + ((division[0].losses - team.losses) / 2) }}</td> 
+                <!-- Actions -->
+                <td class="px-6 py-4 text-gray-400 text-center">
+                  <router-link :to="'/MLB-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
+                </td>
+              </tr>            
             </tbody>
           </table>
-        </div>
-
+        </template>
+      </template>
+      
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  props: {
-    showMLBWesternDivisionTitle: Boolean,
-    showMLBEasternDivisionTitle: Boolean,
-    showMLBALTable: Boolean,
-    showMLBNLTable: Boolean,
-  },
-  methods: {
-    showMLBDivision(conference) {
-      this.$emit('showMLBDivision', conference);
+  import axios from 'axios';
+  export default {
+    props: {
+      showDivisionOptionTable: Boolean,
     },
-  },
-};
+    data(){
+      return{
+        selectedDivision: 'Select', // Default selection
+        divisions: {
+          'American League': {
+            'East': [],
+            'Central': [],
+            'West': []
+          },
+          'National League': {
+            'East': [],
+            'Central': [],
+            'West': []
+          }
+        },
+        isLoading: false, // Add this line to initialize isLoading
+        nlDivisionWinsDiff: 0,
+        nlDivisionLossesDiff: 0,  
+        alDivisionWinsDiff: 0,
+        alDivisionLossesDiff: 0,
+      };
+    },
+    methods: {
+      async fetchDivisionStandings() {
+        // Set loading of API to true when the call starts
+        this.isLoading = true;
+
+        const endpoint = `https://localhost:7102/api/MLBDivision`;
+
+        try {
+          const response = await axios.get(endpoint);
+          // Check if response data exists
+          if (response.data && response.data.body) {
+            const teams = response.data.body;
+            // Initialize divisions object
+            this.divisions = {
+              'American League': {
+                'East': [],
+                'Central': [],
+                'West': []
+              },
+              'National League': {
+                'East': [],
+                'Central': [],
+                'West': []
+              }
+            };
+            // Function to populate divisions for each conference
+            const populateDivisions = (team) => {
+              this.divisions[team.conference][team.division].push({
+                teamLogo: team.mlbLogo1,
+                teamAbv : team.teamAbv,
+                displayName: `${team.teamCity} ${team.teamName}`,
+                wins: parseInt(team.wins),
+                losses: parseInt(team.loss)
+              });
+            };
+
+            // Populate divisions for each team
+            teams.forEach(team => {
+              populateDivisions(team);
+            });
+
+             // Sort the teams within each division by wins
+             for (const league in this.divisions) {
+                for (const division in this.divisions[league]) {
+                    this.divisions[league][division].sort((a, b) => b.wins - a.wins);
+                }
+            }
+
+            // Now divisions object contains the structured data
+            console.log(this.divisions);
+          }
+        } catch (error) {
+          console.error('Error fetching division standings:', error);
+        } finally {
+          // Set loading state to false after API call completes
+          this.isLoading = false;
+        }
+      },
+    }
+  };
 </script>

@@ -70,7 +70,7 @@
        </div>
      </div>
  </template>
-
+ 
 <script>
 import axios from 'axios';
 
@@ -151,29 +151,23 @@ export default {
       if (!teamAbv) {
         return;
       }
-      const endpoint = `https://localhost:7102/api/NHLTeamPlayers`;
-      try {
-        const response = await axios.get(endpoint, {
-          headers: {
-            teamAbv: teamAbv // Sending the selected conference as a header
-          }
-        });
-        
-        console.log("response is: ", response);
-        
-        this.teamPlayers = response.data.body.roster.map(
-          athlete => ({
-            headshot: athlete.espnHeadshot ? athlete.espnHeadshot : '/images/no-img.png',
-            position: athlete.pos ? athlete.pos : 'Unknown Position',
-            fullName: athlete.longName,
-            displayWeight: athlete.weight,
-            displayHeight: athlete.height,
-            dateOfBirth: athlete.bDay,
-          })
-        );
-      
-        console.log("Team players:", this.teamPlayers); // Log the teamPlayers array
-      
+      const endpoint = `https://localhost:7102/api/NBATeamPlayers`;
+        try {
+          const response = await axios.get(endpoint, {
+            headers: {
+              teamAbv: teamAbv // Sending the selected conference as a header
+            }
+          });
+
+      this.teamPlayers = response.data.body.roster.map(athlete => ({
+        headshot: athlete.espnHeadshot ? athlete.espnHeadshot : '/images/no-img.png',
+        position: athlete.pos ? athlete.pos : 'Unknown Position',
+        fullName: athlete.longName,
+        displayWeight: athlete.weight,
+        displayHeight: athlete.height,
+        dateOfBirth: athlete.bDay,
+      }));
+      console.log("Team players:", this.teamPlayers); // Log the teamPlayers array
       } catch (error) {
         console.error('Failed to fetch team players:', error);
       }
