@@ -5,17 +5,19 @@
       <div class="flex justify-center my-4">
         <select v-model="selectedDivision" @change="fetchDivisionStandings" class="block w-1/2 p-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
           <option value="Select" disabled selected>Select a Division</option>
-          <option value="American League">American League</option>
-          <option value="National League">National League</option>
+          <option value="American League East">American League East</option>
+          <option value="American League Central">American League Central</option>
+          <option value="American League West">American League West</option>
+          <option value="National League East">National League East</option>
+          <option value="National League Central">National League Central</option>
+          <option value="National League West">National League West</option>
         </select>
       </div>
     </div>
 
-     <!-- Render division tables dynamically -->
-     <div v-if="selectedDivision" class="justify-center">
-      <template v-if="divisions[selectedDivision]">
-        <template v-for="(division, divisionName) in divisions[selectedDivision]" :key="divisionName">
-          <table v-if="division.length > 0" class="mt-4 border-collapse border border-gray-500">
+    <!-- Render division tables dynamically -->
+    <div v-if="selectedDivision" class="justify-center">
+            <table v-if="divisions[selectedDivision]" class="mt-4 border-collapse border border-gray-500">
             <colgroup>
               <col style="width: 60%;">
               <col style="width: 10%;">
@@ -38,7 +40,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(team, index) in division" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+              <tr v-for="(team, index) in divisions[selectedDivision]" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
                 <!-- Team information -->
                 <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
                   <img class="block w-12 h-12 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
@@ -47,7 +49,7 @@
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.wins }}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins / (team.wins + team.losses)) * 100).toFixed(1) }}</td>
-                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins - division[0].wins) / 2) + ((division[0].losses - team.losses) / 2) }}</td> 
+                <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins - divisions[selectedDivision][0].wins) / 2) + ((divisions[selectedDivision][0].losses - team.losses) / 2) }}</td> 
                 <!-- Actions -->
                 <td class="px-6 py-4 text-gray-400 text-center">
                   <router-link :to="'/MLB-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
@@ -55,9 +57,6 @@
               </tr>            
             </tbody>
           </table>
-        </template>
-      </template>
-      
     </div>
   </div>
 </template>
@@ -72,22 +71,14 @@
       return{
         selectedDivision: 'Select', // Default selection
         divisions: {
-          'American League': {
-            'East': [],
-            'Central': [],
-            'West': []
-          },
-          'National League': {
-            'East': [],
-            'Central': [],
-            'West': []
-          }
+          'American League East': [],
+          'American League Central': [],
+          'American League West': [],
+          'National League East': [],
+          'National League Central': [],
+          'National League West': []
         },
         isLoading: false, // Add this line to initialize isLoading
-        nlDivisionWinsDiff: 0,
-        nlDivisionLossesDiff: 0,  
-        alDivisionWinsDiff: 0,
-        alDivisionLossesDiff: 0,
       };
     },
     methods: {
@@ -104,20 +95,18 @@
             const teams = response.data.body;
             // Initialize divisions object
             this.divisions = {
-              'American League': {
-                'East': [],
-                'Central': [],
-                'West': []
-              },
-              'National League': {
-                'East': [],
-                'Central': [],
-                'West': []
-              }
+              'American League East': [],
+              'American League Central': [],
+              'American League West': [],
+              'National League East': [],
+              'National League Central': [],
+              'National League West': []
             };
             // Function to populate divisions for each conference
             const populateDivisions = (team) => {
-              this.divisions[team.conference][team.division].push({
+            const divisionName = team.conference + " " + team.division;
+            console.log("divisionName is: " + divisionName);
+              this.divisions[divisionName].push({
                 teamLogo: team.mlbLogo1,
                 teamAbv : team.teamAbv,
                 displayName: `${team.teamCity} ${team.teamName}`,
@@ -132,11 +121,11 @@
             });
 
              // Sort the teams within each division by wins
-             for (const league in this.divisions) {
-                for (const division in this.divisions[league]) {
-                    this.divisions[league][division].sort((a, b) => b.wins - a.wins);
+            
+                for (const division in this.divisions) {
+                    this.divisions[division].sort((a, b) => b.wins - a.wins);
                 }
-            }
+
 
             // Now divisions object contains the structured data
             console.log(this.divisions);

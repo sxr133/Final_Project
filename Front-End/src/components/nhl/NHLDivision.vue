@@ -1,21 +1,21 @@
 <template>
   <div>
-    <div v-if="showDivisionOptionTable" class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div v-if="showNHLDivisionOptionTable" class="relative overflow-x-auto shadow-md sm:rounded-lg">
       <!-- Dropdown for selecting conference -->
       <div class="flex justify-center my-4">
         <select v-model="selectedDivision" @change="fetchDivisionStandings" class="block w-1/2 p-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:border-blue-500 focus:outline-none focus:ring">
           <option value="Select" disabled selected>Select a Division</option>
-          <option value="Western Conference">Western Division</option>
-          <option value="Eastern Conference">Eastern Division</option>
+          <option value="Central Division">Central Division</option>
+          <option value="Pacific Division">Pacific Division</option>
+          <option value="Atlantic Division">Atlantic Division</option>
+          <option value="Metropolitan Division">Metropolitan Division</option>
         </select>
       </div>
     </div>
 
     <!-- Render division tables dynamically -->
     <div v-if="selectedDivision" class="justify-center">
-      <template v-if="divisions[selectedDivision]">
-        <template v-for="(division, divisionName) in divisions[selectedDivision]" :key="divisionName">
-          <table v-if="division.length > 0" class="mt-4 border-collapse border border-gray-500">
+      <table v-if="divisions[selectedDivision]" class="mt-4 border-collapse border border-gray-500">
             <colgroup>
               <col style="width: 20%;">
               <col style="width: 5%;">
@@ -38,7 +38,7 @@
             </colgroup>
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
               <tr>
-                <th colspan="18" class="text-center py-4 text-xl font-semibold">{{ divisionName }}</th>
+                <th colspan="18" class="text-center py-4 text-xl font-semibold">{{ selectedDivision }}</th>
               </tr>
               <tr>
                 <th scope="col" class="px-6 py-3" title="Team">Team</th>
@@ -62,7 +62,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(team, index) in division" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
+              <tr v-for="(team, index) in divisions[selectedDivision]" :key="index" class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 px-6 py-4 text-gray-400">
                 <!-- Team information -->
                 <td class="flex flex-col items-center justify-center px-6 py-4 text-gray-400">
                   <img class="block w-16 h-16 mb-2" :src="team.teamLogo" :alt="team.displayName + ' logo'">
@@ -90,8 +90,6 @@
               </tr>            
             </tbody>
           </table>
-        </template>
-      </template>
       
     </div>
   </div>
@@ -102,27 +100,17 @@
 
   export default {
     props: {
-
-      showDivisionOptionTable: Boolean,
-
+      showNHLDivisionOptionTable: Boolean,
     },
     data(){
       return{
         selectedDivision: 'Select', // Default selection
         divisions: {
-          'Western Conference': {
             'Central Division': [],
-            'Pacific Division': []
-          },
-          'Eastern Conference': {
+            'Pacific Division': [],
             'Atlantic Division': [],
             'Metropolitan Division': []
           }
-        },
-        easternDivisionWinsDiff: 0,
-        easternDivisionLossesDiff: 0,  
-        westernDivisionWinsDiff: 0,
-        westernDivisionLossesDiff: 0,
       };
     },
     methods: {
@@ -143,19 +131,15 @@
 
             // Initialize divisions object
             this.divisions = {
-              'Western Conference': {
                 'Central Division': [],
-                'Pacific Division': []
-              },
-              'Eastern Conference': {
+                'Pacific Division': [],
                 'Atlantic Division': [],
                 'Metropolitan Division': []
-              }
             };
-
+            
             // Function to populate divisions for each conference
             const populateDivisions = (team) => {
-              this.divisions[team.conference + ' Conference'][team.division + ' Division'].push({
+              this.divisions[team.division + ' Division'].push({
                 teamAbv : team.teamAbv,
                 teamLogo: team.espnLogo1,
                 displayName: team.teamCity + " " + team.teamName,
@@ -182,11 +166,10 @@
             });
 
              // Sort the teams within each division by wins
-             for (const league in this.divisions) {
-                for (const division in this.divisions[league]) {
-                    this.divisions[league][division].sort((a, b) => b.wins - a.wins);
+                for (const division in this.divisions) {
+                    this.divisions[division].sort((a, b) => b.wins - a.wins);
                 }
-            }
+
 
             // Now divisions object contains the structured data
             console.log("division",this.divisions);

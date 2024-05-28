@@ -22,13 +22,13 @@
         <div v-if="currentLeague === 'nhl'">
           <NHLConference 
             :showNHLTable="showNHLTable"
-          
+            :showNHLDivisionTable="false"
           />
         
-          <div v-if="!showNHLTeamPlayers">
+          <div v-if="showNHLDivisionTable">
             <!-- NHL Division Component -->
             <NHLDivision 
-              :showDivisionOptionTable = "showDivisionOptionTable"
+              :showNHLDivisionOptionTable = "showNHLDivisionOptionTable"
               @teamSelected = "showTeamPlayers" 
             />
           </div>
@@ -95,6 +95,8 @@
         showDropDown: false,
         selectedStats: "Select", 
         showNHLTable: false,
+        showNHLDivisionTable: false,
+        showNHLDivisionOptionTable:false,
         showDivisionOptionTable: false,
         showNHLTeamPlayers: false,
         selectedTeamId: null,
@@ -103,17 +105,11 @@
         currentLeague: null,
 
         showMLBTable: false,
-        showMLBWesternTable: false,
-        showMLBEasternTable: false,
-        showMLBWesternDivisionTitle: false,
-        showMLBEasternDivisionTitle: false,
+        
         showMLBTeamPlayers: false,
 
         showNBATable: false,
-        showNBAWesternTable: false,
-        showNBAEasternTable: false,
-        showNBAWesternDivisionTitle: false,
-        showNBAEasternDivisionTitle: false,
+        
         showNBATeamPlayers: false,
         
       };
@@ -125,42 +121,41 @@
         this.showNHLTable = false;
         this.showNBATable = false;
         this.showMLBTable = false;
+        this.showNHLDivisionOptionTable = false;
         this.showDivisionOptionTable = false;
 
         if (this.currentLeague === 'nhl') {
-          console.log("inside the current league of NHL");
+          console.log("changing selection");
           if (option === 'Conferences') {
+            console.log("changing selection in conferences");
             // Logic for showing conference stats
-            this.showNHLTable = !this.showNHLTable;
-            this.showDivisionOptionTable = false;
+            this.showNHLTable = true;
+            this.showNHLDivisionTable = false;
+            this.showNHLDivisionOptionTable = false;
           } else if (option === 'Divisions') {
+            console.log("changing selection in divisions");
             // Logic for showing division stats
-            this.showDivisionOptionTable = !this.showDivisionOptionTable;
+            this.showNHLDivisionTable = true;
+            this.showNHLDivisionOptionTable = true;
             this.showNHLTable = false;
           }
         }else if (this.currentLeague === 'mlb') {
-          console.log("inside the current league of MLB");
           if (option === 'Conferences') {
-            console.log("inside the conference for MLB");
-            // Logic for showing conference stats
+           // Logic for showing conference stats
             this.showMLBTable = !this.showMLBTable;
             this.showDivisionOptionTable = false;
           } else if (option === 'Divisions') {
             // Logic for showing division stats
-            console.log("inside the division for MLB");
             this.showDivisionOptionTable = !this.showDivisionOptionTable;
             this.showMLBTable = false;
           }
         }else if (this.currentLeague === 'nba') {
-          console.log("inside the current league of NBA");
           if (option === 'Conferences') {
-            console.log("inside the conference for NBA");
             // Logic for showing conference stats
             this.showNBATable = !this.showNBATable;
             this.showDivisionOptionTable = false;
           } else if (option === 'Divisions') {
             // Logic for showing division stats
-            console.log("inside the division for NBA");
             this.showDivisionOptionTable = !this.showDivisionOptionTable;
             this.showNBATable = false;
           }
@@ -172,13 +167,13 @@
           console.log("NHL Selected");
           this.currentLeague = 'nhl';
           this.showDropDown = true;
-          
+          this.showNHLDivisionTable = false;
           this.showMLBTable = false;
           this.showNBATable = false;
           this.showNHLTeamPlayers = false;
           this.showNBATeamPlayers = false;
           this.selectedStats = "Select";
-          this.showDivisionOptionTable = false;
+          this.showNHLDivisionOptionTable = false;
         } 
         else if (league === 'mlb') {
           console.log("MLB Selected")
@@ -259,6 +254,7 @@
         this.selectedStats = "Divisions"; // Set the dropdown value to 'Divisions'
         this.showNHLTeamPlayers = false; // Hide NHL conference table if it's visible
         this.showDivisionOptionTable = true; // Show NHL division table
+        this.showNHLDivisionOptionTable = true;
         this.selectedDivision = 'NHL'; // Set the selected division to NHL
       }
     }
