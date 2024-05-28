@@ -97,27 +97,7 @@
         westernConference: [],
         easternConference: [],
         isLoading: false, // Added to track when the API call is happening
-        easternConferenceWinsDiff: 0,
-        easternConferenceLossesDiff: 0,  
-        westernConferenceWinsDiff: 0,
-        westernConferenceLossesDiff: 0,
       };
-    },
-    computed: {
-      calculatedValue() {
-        return (team) => {
-          
-            if (this.selectedConference === 'Eastern Conference') {
-              const easternConferenceWinsDiff = Math.abs((team.wins - this.easternConference[0].wins) / 2);
-              const easternConferenceLossesDiff = Math.abs((team.losses - this.easternConference[0].losses) / 2);
-              return easternConferenceWinsDiff + easternConferenceLossesDiff;
-            } else {
-              const westernConferenceWinsDiff = Math.abs((team.wins - this.westernConference[0].wins) / 2);
-              const westernConferenceLossesDiff = Math.abs((team.losses - this.westernConference[0].losses) / 2);
-              return westernConferenceWinsDiff + westernConferenceLossesDiff;
-            }
-        };
-      }
     },
     methods: {
       async fetchConferenceStandings() {
@@ -152,7 +132,7 @@
                 ShotsFor: entry.teamStats.shots,
                 ShotsAgainst: entry.teamStats.shotsAgainst,
                 FaceOffPercentage: ((parseInt(entry.teamStats.faceoffsWon) / parseInt(entry.teamStats.faceoffs)) * 100).toFixed(1),
-                conference: conference,
+                conference: conference
             }));
             };
 
@@ -164,10 +144,10 @@
 
             // Sort NL conference array by wins
             this.easternConference.sort((a, b) => b.wins - a.wins);
-            console.table("eastern",this.easternConference);
+
             // Sort AL conference array by wins
             this.westernConference.sort((a, b) => b.wins - a.wins);
-            console.table("western",this.westernConference);
+
           } else {
             console.error('Unexpected response format:', response.data);
           }
