@@ -30,7 +30,8 @@ namespace Sports_Stats_Back_End.Controllers.NHL_API
                 Console.WriteLine("Team Abv {0}", teamAbv);
                 string apiKey = _configuration["AppSettings:ApiKey"];
                 var client = _clientFactory.CreateClient();
-                var uri = new Uri($"https://tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com/getNHLTeamRoster?teamAbv={teamAbv}&getStats=totals");
+                var uri = 
+                    new Uri($"https://tank01-nhl-live-in-game-real-time-statistics-nhl.p.rapidapi.com/getNHLTeamRoster?teamAbv={teamAbv}&getStats=totals");
                 Console.WriteLine("Uri {0}", uri);
                 var request = new HttpRequestMessage
                 {
