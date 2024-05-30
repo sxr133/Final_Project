@@ -28,16 +28,20 @@
           <div v-if="showNHLDivisionTable">
             <!-- NHL Division Component -->
             <NHLDivision 
-              :showNHLDivisionOptionTable = "showNHLDivisionOptionTable"
+              :showNHLDivisionOptionTable = "true"
               @teamSelected = "showTeamPlayers" 
+             
             />
           </div>
 
           <!-- NHL Team Players Component -->
-          <NHLTeamPlayers v-if="showNHLTeamPlayers" 
-            :teamId="selectedTeamId" 
-            @goToDivisionPage="handleGoToDivisionPage"
-          />
+          <div>
+            <NHLTeamPlayers 
+              :teamName = "selectedTeamName"
+              :teamAbv = "selectedTeamAbv"
+              @selectedDivision="handleGoToDivisionPage"
+            />
+          </div>
         </div>
         
         <div v-if="currentLeague === 'nba'">
@@ -99,8 +103,8 @@
         showNHLDivisionOptionTable:false,
         showDivisionOptionTable: false,
         showNHLTeamPlayers: false,
-        selectedTeamId: null,
-        selectedDivision: null,
+        selectedTeamAbv: '',
+        selectedTeamName: '',
 
         currentLeague: null,
 
@@ -242,21 +246,25 @@
         }
       },
        // Update this method to set showNHLTeamPlayers to true and selectedTeamId to the selected team's ID
-      showTeamPlayers(teamId) {
+      showTeamPlayers(teamInfo) {
+        console.log("home page team info is: ", teamInfo);
         this.showNHLTeamPlayers = true;
-        this.selectedTeamId = teamId;
-
+        this.selectedTeamAbv = teamInfo.teamAbv;
+        this.selectedTeamName = teamInfo.teamName;
       },
-      handleGoToDivisionPage() {
+      handleGoToDivisionPage(selectedDivision) {
         console.log("the emit is working");
-         // Logic to navigate to the Division Page with appropriate settings
-        this.showDropDown = true;
-        this.selectedStats = "Divisions"; // Set the dropdown value to 'Divisions'
-        this.showNHLTeamPlayers = false; // Hide NHL conference table if it's visible
-        this.showDivisionOptionTable = true; // Show NHL division table
-        this.showNHLDivisionOptionTable = true;
-        this.selectedDivision = 'NHL'; // Set the selected division to NHL
-      }
+        console.log("selected Division", selectedDivision);
+        
+        // Logic to navigate to the Division Page with appropriate settings
+        if (this.currentLeague === 'nhl') {
+            this.showDropDown = true;
+            this.selectedStats = "Divisions"; // Set the dropdown value to 'Divisions'
+            this.showNHLTeamPlayers = false; // Hide NHL conference table if it's visible
+            this.showDivisionOptionTable = true; // Show NHL division table
+            this.showNHLDivisionOptionTable = true;
+        }
+    }
     }
   };
 </script>

@@ -14,7 +14,10 @@
       <table v-if="selectedConference != 'Select'" class="mt-4 border-collapse border border-gray-500">
         <!-- Table content -->
         <colgroup>
-          <col style="width: 60%;">
+          <col style="width: 30%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
+          <col style="width: 10%;">
           <col style="width: 10%;">
           <col style="width: 10%;">
           <col style="width: 10%;">
@@ -27,6 +30,9 @@
             <th scope="col" class="px-6 py-3">Losses</th>
             <th scope="col" class="px-6 py-3">PCT</th>
             <th scope="col" class="px-6 py-3">Games Behind</th>
+            <th scope="col" class="px-6 py-3">Points For</th>
+            <th scope="col" class="px-6 py-3">Points Against</th>
+            <th scope="col" class="px-6 py-3">Points Differential</th>
           </tr>
         </thead>
 
@@ -42,6 +48,9 @@
             <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins / (team.wins + team.losses)) * 100).toFixed(1) }}</td>
             <td class="px-6 py-4 text-gray-400 text-center">{{ calculatedValue(team) }}</td> 
+            <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsFor }}</td> 
+            <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsAgainst }}</td> 
+            <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsFor - team.pointsAgainst }}</td> 
           </tr>
         </tbody>
       </table>        <!-- Table content -->
@@ -109,6 +118,8 @@
                 displayName: entry.teamCity + " " + entry.teamName,
                 wins: parseInt(entry.wins),
                 losses: parseInt(entry.loss),
+                pointsFor: parseInt(entry.ppg),
+                pointsAgainst: parseInt(entry.oppg),
                 conference: conference,
             }));
             };

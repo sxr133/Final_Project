@@ -61,6 +61,14 @@ export default {
 
     const login = async () => { // Make login function async to use await
       try {
+        if (email.value === 'guest' && password.value === 'password') {
+          // If the entered email and password match the bypass values
+          console.log('Bypassing validation...');
+          emit('loginSuccess');
+          router.push({ name: 'homePage' }); // Redirect to the 'entry' route upon successful login
+          return;
+        }
+
         const endpoint = `https://localhost:7102/Login`;
         const response = await axios.post(endpoint, { 
           email: email.value,
