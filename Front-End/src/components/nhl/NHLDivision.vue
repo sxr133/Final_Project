@@ -85,7 +85,7 @@
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.ShotsAgainst}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{team.FaceOffPercentage}}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">
-                  <router-link :to="'/NHL-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
+                  <router-link :to="'/NHL-team-roster/' + selectedDivision + '/' + team.teamAbv + '/' + team.displayName" @click="$emit('teamSelected', { teamAbv: team.teamAbv, teamName: team.displayName, selectedDivision : selectedDivision })">View Team Roster</router-link>
                 </td>
               </tr>            
             </tbody>
@@ -118,16 +118,14 @@
         // Set loading of API to true when the call starts
         this.isLoading = true; 
         const endpoint = `https://localhost:7102/api/NHLDivision`;
-        console.log("i get here inside the fetch");
+
         try {
-          console.log("i get here inside the try");
+
           const response = await axios.get(endpoint);
 
           // Check if response.data.response exists
           if (response.data && response.data.body) {
             const teams = response.data.body;
-
-            console.log("response.data contains ", response.data);
 
             // Initialize divisions object
             this.divisions = {
@@ -161,7 +159,6 @@
 
             // Populate divisions for each team
             teams.forEach(team => {
-              console.log("team", team);
               populateDivisions(team);
             });
 
@@ -169,10 +166,6 @@
                 for (const division in this.divisions) {
                     this.divisions[division].sort((a, b) => b.wins - a.wins);
                 }
-
-
-            // Now divisions object contains the structured data
-            console.log("division",this.divisions);
           }
         } catch (error) {
           console.error('Error fetching division standings:', error);

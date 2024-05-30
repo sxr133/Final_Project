@@ -19,7 +19,10 @@
     <div v-if="selectedDivision" class="justify-center">
            <table v-if="divisions[selectedDivision]" class="mt-4 border-collapse border border-gray-500">
             <colgroup>
-              <col style="width: 60%;">
+              <col style="width: 20%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
+              <col style="width: 10%;">
               <col style="width: 10%;">
               <col style="width: 10%;">
               <col style="width: 10%;">
@@ -28,7 +31,7 @@
             </colgroup>
             <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
               <tr>
-                <th colspan="7" class="text-center py-4 text-xl font-semibold">{{ divisionName }}</th>
+                <th colspan="9" class="text-center py-4 text-xl font-semibold">{{ selectedDivision }}</th>
               </tr>
               <tr>
                 <th scope="col" class="px-6 py-3">Team</th>
@@ -36,6 +39,9 @@
                 <th scope="col" class="px-6 py-3">Losses</th>
                 <th scope="col" class="px-6 py-3">PCT</th>
                 <th scope="col" class="px-6 py-3">Games Behind</th>
+                <th scope="col" class="px-6 py-3">Points For</th>
+                <th scope="col" class="px-6 py-3">Points Against</th>
+                <th scope="col" class="px-6 py-3">Points Differential</th>
                 <th scope="col" class="px-6 py-3">Team Roster</th>
               </tr>
             </thead>
@@ -50,7 +56,9 @@
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.losses }}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins / (team.wins + team.losses)) * 100).toFixed(1) }}</td>
                 <td class="px-6 py-4 text-gray-400 text-center">{{ ((team.wins - divisions[selectedDivision][0].wins) / 2) + ((divisions[selectedDivision][0].losses - team.losses) / 2) }}</td> 
-                <!-- Actions -->
+                <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsFor }}</td> 
+                <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsAgainst }}</td> 
+                <td class="px-6 py-4 text-gray-400 text-center">{{ team.pointsFor - team.pointsAgainst }}</td> 
                 <td class="px-6 py-4 text-gray-400 text-center">
                   <router-link :to="'/NBA-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
                 </td>
@@ -117,7 +125,9 @@
                 teamAbv : team.teamAbv,
                 displayName: team.teamCity + " " + team.teamName,
                 wins: parseInt(team.wins),
-                losses: parseInt(team.loss)
+                losses: parseInt(team.loss),
+                pointsFor: parseInt(team.ppg),
+                pointsAgainst: parseInt(team.oppg)
               });
             };
 

@@ -19,24 +19,25 @@ const routes = [
     path: '/home',
     name: 'homePage',
     component: HomePage,
-    props: true // This ensures that route params are passed as props to the component
+    props: true
   },
   {
     path: '/MLB-team-roster/:teamAbv',
     name: 'mlb-team-roster',
     component: MLBTeamPlayers,
-    props: route => ({ teamAbv: route.params.teamAbv }),
+    props: route => ({ teamAbv: route.params.teamAbv}),
     beforeEnter: (to, from, next) => {
       console.log('Navigating to MLB team-roster route');
       next(); 
     }
   },
   {
-    path: '/NHL-team-roster/:teamAbv',
+    path: '/NHL-team-roster/:selectedDivision/:teamAbv/:teamName',
     name: 'nhl-team-roster',
     component: NHLTeamPlayers,
-    props: route => ({ teamAbv: route.params.teamAbv }),
+    props: route => ({ selectedDivision: route.params.selectedDivision, teamAbv: route.params.teamAbv, teamName: route.params.teamName }),
     beforeEnter: (to, from, next) => {
+      console.log('Route params:', to.params);
       console.log('Navigating to NHL team-roster route');
       next(); 
     }
