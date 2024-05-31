@@ -43,33 +43,37 @@
             />
           </div>
         </div>
-        
+
+        <div v-if="currentLeague === 'mlb'">
+          <MLBConference 
+            :showMLBTable="showMLBTable"
+            :showMLBDivisionTable="false"
+          />
+
+          <div v-if="showMLBDivisionTable">
+            <!-- NHL Division Component -->
+            <MLBDivision 
+              :showMLBDivisionOptionTable = "true"
+              @teamSelected = "showTeamPlayers" 
+             
+            />
+          </div>
+        </div>
+
         <div v-if="currentLeague === 'nba'">
           <NBAConference 
             :showNBATable="showNBATable"
           />
 
-          <div v-if="!showNBATeamPlayers">
-            <!-- NBA Division Component -->
+          <div v-if="showNBADivisionTable">
+            <!-- NHL Division Component -->
             <NBADivision 
-              :showDivisionOptionTable = "showDivisionOptionTable"
+              :showNBADivisionOptionTable = "true"
+              @teamSelected = "showTeamPlayers" 
+             
             />
           </div>
         </div>
-
-        <div v-if="currentLeague === 'mlb'">
-          <MLBConference 
-            :showMLBTable="showMLBTable"
-          />
-
-          <div v-if="!showMLBTeamPlayers">
-            <!-- MLB Division Component -->
-            <MLBDivision 
-              :showDivisionOptionTable = "showDivisionOptionTable"
-            />
-          </div>
-        </div>
-
     </div>
   </section>
 </template>

@@ -10,21 +10,31 @@
  
        <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
            <colgroup>
-             <col style="width: 15%;">
-             <col style="width: 30%;">
-             <col style="width: 15%;">
-             <col style="width: 5%;">
              <col style="width: 5%;">
              <col style="width: 15%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
+             <col style="width: 8%;">
            </colgroup>
            <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-100">
              <tr>
-               <th colspan="8" class="text-center py-4 text-xl font-semibold border border-gray-300 rounded-md">{{ teamName }}</th>
+               <th colspan="17" class="text-center py-4 text-xl font-semibold border border-gray-300 rounded-md">{{ teamName }}</th>
              </tr> 
              <tr>
                <th scope="col" class="px-6 py-3">
                  <span @click="sortByColumn('position')" class="cursor-pointer">
-                   Position
+                   POS
                    <span v-if="sortBy === 'position' || sortBy === null" class="ml-1">
                      <span v-if="sortDirection === 'asc'">▲</span>
                      <span v-else-if="sortDirection === 'desc'">▼</span>
@@ -33,19 +43,27 @@
                </th>
                <th scope="col" class="px-6 py-3">
                  <span @click="sortByColumn('name')" class="cursor-pointer">
-                   Name
+                   NAME
                    <span v-if="sortBy === 'name' || sortBy === null" class="ml-1">
                      <span v-if="sortDirection === 'asc'">▲</span>
                      <span v-else-if="sortDirection === 'desc'">▼</span>
                    </span>                
                  </span>
                </th>
-               <th scope="col" class="px-6 py-3">Weight</th>
-               <th scope="col" class="px-6 py-3">Height</th>
-               <th scope="col" class="px-6 py-3">Age</th>
-               <th scope="col" class="px-6 py-3">Date of Birth</th>
-               <th scope="col" class="px-6 py-3">Debut Year</th>
-               <th scope="col" class="px-6 py-3">Player OverAll Stats</th>
+               <th scope="col" class="px-6 py-3" title="Games Play">GP</th>
+               <th scope="col" class="px-6 py-3" title="Minutes">Min</th>
+               <th scope="col" class="px-6 py-3" title="Points">Pts</th>
+               <th scope="col" class="px-6 py-3" title="Field Goals Made">FG</th>
+               <th scope="col" class="px-6 py-3" title="Field Goals Percentage">FG%</th>
+               <th scope="col" class="px-6 py-3" title="Three Point Made">3pt</th>
+               <th scope="col" class="px-6 py-3" title="Three Point Percentage">3pt%</th>
+               <th scope="col" class="px-6 py-3" title="Free Throws Made">Ftm</th>
+               <th scope="col" class="px-6 py-3" title="Free Throws Attempted">Fta</th>
+               <th scope="col" class="px-6 py-3" title="Offensive Rebounds">OffReb</th>
+               <th scope="col" class="px-6 py-3" title="Defensive Rebounds">DefReb</th>
+               <th scope="col" class="px-6 py-3" title="Assists">Ast</th>
+               <th scope="col" class="px-6 py-3" title="Steals">Stl</th>
+               <th scope="col" class="px-6 py-3" title="Blocks">Blk</th>
              </tr>
            </thead>
            <tbody >
@@ -57,12 +75,20 @@
                  <img class="block w-16 h-16 mb-2" :src="player.headshot" :alt="player.fullName + ' headshot'">
                  <span class="block text-center">{{ player.fullName }}</span>
                </td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ player.displayWeight }}</td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ player.displayHeight }}</td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ player.age }}</td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ formatDate(player.dateOfBirth) }}</td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
-               <td class="px-6 py-4 text-gray-400 text-center">{{ player.debutYear }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.gamesPlay }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.minutes }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.points }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.fgm }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.fgmPercent }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.tpm }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.tpmPercent }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.ftm }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.ftmAttempt }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.offRebounds }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.defRebounds }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.assists }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.steals }}</td>
+               <td class="px-6 py-4 text-gray-400 text-center">{{ player.blocks }}</td>
              </tr>  
            </tbody>
          </table>
@@ -79,13 +105,20 @@ export default {
     teamAbv: {
       type: String,
       required: true,
+    },
+    teamName: {
+      type: String,
+      required: true
+    },
+    selectedDivision: {
+      type: String,
+      required: true
     }
 
   },
 
   data() {
     return {
-      selectedDivision: '',
       sortBy: null, // Initialize sortBy to null',
       sortDirection: 'asc',
       teamPlayers: [],
@@ -163,9 +196,20 @@ export default {
         headshot: athlete.espnHeadshot ? athlete.espnHeadshot : '/images/no-img.png',
         position: athlete.pos ? athlete.pos : 'Unknown Position',
         fullName: athlete.longName,
-        displayWeight: athlete.weight,
-        displayHeight: athlete.height,
-        dateOfBirth: athlete.bDay,
+        gamesPlay: athlete.stats.gamesPlayed,
+        points: athlete.stats.pts,
+        minutes: athlete.stats.mins,
+        fgm: athlete.stats.fgm,
+        fgmPercent: athlete.stats.fgp,
+        tpm: athlete.stats.tptfgm,
+        tpmPercent: athlete.stats.tptfgp,
+        ftm: athlete.stats.ftm,
+        ftmAttempt: athlete.stats.fta,
+        offRebounds: athlete.stats.OffReb,
+        defRebounds: athlete.stats.DefReb,
+        assists: athlete.stats.ast,
+        steals: athlete.stats.stl,
+        blocks: athlete.stats.blk
       }));
       console.log("Team players:", this.teamPlayers); // Log the teamPlayers array
       } catch (error) {
