@@ -22,10 +22,10 @@ const routes = [
     props: true
   },
   {
-    path: '/MLB-team-roster/:teamAbv',
+    path: '/MLB-team-roster/:selectedDivision/:teamAbv/:teamName',
     name: 'mlb-team-roster',
     component: MLBTeamPlayers,
-    props: route => ({ teamAbv: route.params.teamAbv}),
+    props: route => ({ selectedDivision: route.params.selectedDivision, teamAbv: route.params.teamAbv, teamName: route.params.teamName }),
     beforeEnter: (to, from, next) => {
       console.log('Navigating to MLB team-roster route');
       next(); 
@@ -43,10 +43,10 @@ const routes = [
     }
   },
   {
-    path: '/NBA-team-roster/:teamAbv',
+    path: '/NBA-team-roster/:selectedDivision/:teamAbv/:teamName',
     name: 'nba-team-roster',
     component: NBATeamPlayers,
-    props: route => ({ teamAbv: route.params.teamAbv }),
+    props: route => ({ selectedDivision: route.params.selectedDivision, teamAbv: route.params.teamAbv, teamName: route.params.teamName }),
     beforeEnter: (to, from, next) => {
       console.log('Navigating to NBA team-roster route');
       next(); 

@@ -60,7 +60,7 @@
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.runsAgainst }}</td> 
                 <td class="px-6 py-4 text-gray-400 text-center">{{ team.runsScored - team.runsAgainst }}</td> 
                 <td class="px-6 py-4 text-gray-400 text-center">
-                  <router-link :to="'/MLB-team-roster/' + team.teamAbv" @click="$emit('teamSelected', { teamAbv: team.teamAbv })">View Team Roster</router-link>
+                  <router-link :to="'/MLB-team-roster/' + selectedDivision + '/' + team.teamAbv + '/' + team.displayName" @click="$emit('teamSelected', { teamAbv: team.teamAbv, teamName: team.displayName, selectedDivision : selectedDivision })">View Team Roster</router-link>
                 </td>
               </tr>            
             </tbody>
