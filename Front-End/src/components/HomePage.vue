@@ -35,11 +35,24 @@
           </div>
 
           <!-- NHL Team Players Component -->
-          <div>
+          <div v-if="showNHLTeamPlayers">
             <NHLTeamPlayers 
               :teamName = "selectedTeamName"
               :teamAbv = "selectedTeamAbv"
-              @selectedDivision="handleGoToDivisionPage"
+              @goBack="handleGoToDivisionPage"
+            />
+          </div>
+        </div>
+        
+        <div v-if="currentLeague === 'nba'">
+          <NBAConference 
+            :showNBATable="showNBATable"
+          />
+
+          <div v-if="!showNBATeamPlayers">
+            <!-- NBA Division Component -->
+            <NBADivision 
+              :showDivisionOptionTable = "showDivisionOptionTable"
             />
           </div>
         </div>
@@ -47,33 +60,16 @@
         <div v-if="currentLeague === 'mlb'">
           <MLBConference 
             :showMLBTable="showMLBTable"
-            :showMLBDivisionTable="false"
           />
 
-          <div v-if="showMLBDivisionTable">
-            <!-- NHL Division Component -->
+          <div v-if="!showMLBTeamPlayers">
+            <!-- MLB Division Component -->
             <MLBDivision 
-              :showMLBDivisionOptionTable = "true"
-              @teamSelected = "showTeamPlayers" 
-             
+              :showDivisionOptionTable = "showDivisionOptionTable"
             />
           </div>
         </div>
 
-        <div v-if="currentLeague === 'nba'">
-          <NBAConference 
-            :showNBATable="showNBATable"
-          />
-
-          <div v-if="showNBADivisionTable">
-            <!-- NHL Division Component -->
-            <NBADivision 
-              :showNBADivisionOptionTable = "true"
-              @teamSelected = "showTeamPlayers" 
-             
-            />
-          </div>
-        </div>
     </div>
   </section>
 </template>
@@ -88,6 +84,7 @@
   import NHLTeamPlayers from './nhl/NHLTeamPlayers.vue';
 
   export default {
+  
     components:{
       MLBConference,
       MLBDivision,
@@ -109,7 +106,6 @@
         showNHLTeamPlayers: false,
         selectedTeamAbv: '',
         selectedTeamName: '',
-
         currentLeague: null,
 
         showMLBTable: false,
@@ -255,20 +251,7 @@
         this.showNHLTeamPlayers = true;
         this.selectedTeamAbv = teamInfo.teamAbv;
         this.selectedTeamName = teamInfo.teamName;
-      },
-      handleGoToDivisionPage(selectedDivision) {
-        console.log("the emit is working");
-        console.log("selected Division", selectedDivision);
-        
-        // Logic to navigate to the Division Page with appropriate settings
-        if (this.currentLeague === 'nhl') {
-            this.showDropDown = true;
-            this.selectedStats = "Divisions"; // Set the dropdown value to 'Divisions'
-            this.showNHLTeamPlayers = false; // Hide NHL conference table if it's visible
-            this.showDivisionOptionTable = true; // Show NHL division table
-            this.showNHLDivisionOptionTable = true;
-        }
-    }
+      }
     }
   };
 </script>

@@ -13,7 +13,7 @@ const routes = [
     path: '/',
     name: 'LoginForm',
     component: LoginForm,
-    props: true // This ensures that route params are passed as props to the component
+    props: true
   },
   {
     path: '/home',

@@ -5,8 +5,9 @@
        <input type="text" v-model="searchQuery" placeholder="Search..." class="text-gray-400 uppercase dark:bg-gray-800 my-5 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 placeholder-opacity-100">
  
        <div>
-        <button @click="goToDivisionPage">Go to Division Page</button>
-
+        <button @click="goToDivisionPage(selectedDivision)">Go to Division Page</button>
+        <router-link :to="'/Home/'" @click="$emit('goBack', { selectedDivision: selectedDivision })">Go back</router-link>
+  
        </div>
  
        <table class="mt-4 border-collapse border border-gray-500 w-full md:max-w-screen-xl">
@@ -113,6 +114,7 @@ export default {
   mounted() 
   {
     // Example: Fetch data using teamId and division
+    console.log("testing",this.selectedDivision);
     this.fetchTeamPlayers(this.teamAbv);
   },
   data() {
@@ -139,11 +141,11 @@ export default {
     },
   },
   methods: {
-    goToDivisionPage() {
-    console.log("i am in hte go to division");
-    console.log("selected division is:",this.selectedDivision);
-    this.$emit('selectedDivision');
-  },
+    goToDivisionPage(division) {
+      console.log("i am in hte go to division");
+      console.log("selected division is:",division);
+      this.$emit('divisionSelected', division);
+    },
     formatDate(dateString) {
       // Parse the date string
       const date = new Date(dateString);
